@@ -10,7 +10,7 @@ function App() {
   }
 
   return (
-    <div className="font-medieval">
+    <div className="font-medieval h-screen w-full">
       {showSplash ? (
         <SplashScreen onComplete={handleSplashComplete} />
       ) : (

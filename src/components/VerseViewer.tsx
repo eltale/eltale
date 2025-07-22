@@ -1,87 +1,75 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import VerseCard from './VerseCard';
 import { useBibleVerses } from '../hooks/useBibleVerses';
 
 export default function VerseViewer() {
   const { verses, loading, loadNextVerse } = useBibleVerses();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [startY, setStartY] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [translateY, setTranslateY] = useState(0);
+  const [loadedVerses, setLoadedVerses] = useState<any[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setStartY(e.touches[0].clientY);
-    setIsDragging(true);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    
-    const currentY = e.touches[0].clientY;
-    const deltaY = startY - currentY;
-    
-    if (deltaY > 0) {
-      setTranslateY(-Math.min(deltaY, window.innerHeight));
+  // Initialize with first verse and pre-load next one
+  useEffect(() => {
+    if (verses.length > 0 && loadedVerses.length === 0) {
+      setLoadedVerses([verses[0]]);
+      // Pre-load the next verse immediately
+      loadNextVerse();
     }
-  };
+  }, [verses, loadedVerses.length]);
 
-  const handleTouchEnd = () => {
-    if (!isDragging) return;
+  // Always ensure we have a next verse loaded
+  useEffect(() => {
+    const loadNextIfNeeded = async () => {
+      if (loadedVerses.length > 0 && !isLoadingMore) {
+        // Check if we need to load the next verse (always keep one ahead)
+        const totalAvailable = verses.length;
+        if (loadedVerses.length === totalAvailable) {
+          setIsLoadingMore(true);
+          const newVerse = await loadNextVerse();
+          if (newVerse) {
+            setLoadedVerses(prev => [...prev, newVerse]);
+          }
+          setIsLoadingMore(false);
+        }
+      }
+    };
+
+    loadNextIfNeeded();
+  }, [loadedVerses.length, verses.length, isLoadingMore, loadNextVerse]);
+
+  const handleScroll = useCallback(async () => {
+    if (!containerRef.current || isLoadingMore) return;
+
+    const container = containerRef.current;
+    const scrollTop = container.scrollTop;
+    const scrollHeight = container.scrollHeight;
+    const clientHeight = container.clientHeight;
     
-    const threshold = window.innerHeight * 0.2;
+    // More aggressive pre-loading - trigger when we're within 1.5 screen heights of the bottom
+    const triggerDistance = clientHeight * 1.5;
     
-    if (Math.abs(translateY) > threshold) {
-      handleSwipeUp();
+    if (scrollTop + clientHeight >= scrollHeight - triggerDistance) {
+      setIsLoadingMore(true);
+      
+      // Load next verse
+      const newVerse = await loadNextVerse();
+      if (newVerse) {
+        setLoadedVerses(prev => [...prev, newVerse]);
+      }
+      
+      setIsLoadingMore(false);
     }
-    
-    setTranslateY(0);
-    setIsDragging(false);
-  };
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setStartY(e.clientY);
-    setIsDragging(true);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    
-    const currentY = e.clientY;
-    const deltaY = startY - currentY;
-    
-    if (deltaY > 0) {
-      setTranslateY(-Math.min(deltaY, window.innerHeight));
-    }
-  };
-
-  const handleMouseUp = () => {
-    if (!isDragging) return;
-    
-    const threshold = window.innerHeight * 0.2;
-    
-    if (Math.abs(translateY) > threshold) {
-      handleSwipeUp();
-    }
-    
-    setTranslateY(0);
-    setIsDragging(false);
-  };
-
-  const handleSwipeUp = async () => {
-    if (currentIndex === verses.length - 1) {
-      await loadNextVerse();
-    }
-    setCurrentIndex(prev => Math.min(prev + 1, verses.length));
-  };
+  }, [loadNextVerse, isLoadingMore]);
 
   useEffect(() => {
-    if (verses.length > 0 && currentIndex >= verses.length) {
-      setCurrentIndex(verses.length - 1);
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll, { passive: true });
+      return () => container.removeEventListener('scroll', handleScroll);
     }
-  }, [verses.length, currentIndex]);
+  }, [handleScroll]);
 
-  if (loading && verses.length === 0) {
+  if (loading && loadedVerses.length === 0) {
     return (
       <div className="h-screen w-full bg-gradient-to-b from-brown-dark to-burgundy flex items-center justify-center">
         <div className="text-center">
@@ -92,36 +80,24 @@ export default function VerseViewer() {
     );
   }
 
-  const currentVerse = verses[currentIndex];
-
-  if (!currentVerse) {
-    return (
-      <div className="h-screen w-full bg-gradient-to-b from-brown-dark to-burgundy flex items-center justify-center">
-        <p className="font-medieval text-cream text-xl">No verses available</p>
-      </div>
-    );
-  }
-
   return (
     <div 
       ref={containerRef}
-      className="h-screen w-full overflow-hidden select-none cursor-grab active:cursor-grabbing"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
+      className="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scrollbar-hidden verse-viewer-container"
+      style={{ 
+        scrollbarWidth: 'none', 
+        msOverflowStyle: 'none',
+        WebkitOverflowScrolling: 'touch',
+        position: 'relative',
+        zIndex: 10
+      }}
     >
-      <div 
-        className="transition-transform duration-300 ease-out"
-        style={{ 
-          transform: `translateY(${translateY}px)` 
-        }}
-      >
-        <VerseCard verse={currentVerse} />
-      </div>
+      
+      {loadedVerses.map((verse, index) => (
+        <div key={verse.id} className="snap-start snap-always">
+          <VerseCard verse={verse} />
+        </div>
+      ))}
     </div>
   );
 }

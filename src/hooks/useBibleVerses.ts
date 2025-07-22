@@ -119,7 +119,7 @@ export function useBibleVerses() {
         const cleanText = randomVerse.value.trim().replace(/\s+/g, ' ');
         
         return {
-          id: `${randomBook.name}-${randomVerse.chapterNumber}-${randomVerse.verseNumber}`,
+          id: `${randomBook.name}-${randomVerse.chapterNumber}-${randomVerse.verseNumber}-${Date.now()}`,
           text: cleanText,
           reference: `${randomBook.name} ${randomVerse.chapterNumber}:${randomVerse.verseNumber}`,
           book: randomBook.name,
@@ -137,11 +137,13 @@ export function useBibleVerses() {
     }
   };
 
-  const loadNextVerse = async () => {
+  const loadNextVerse = async (): Promise<BibleVerse | null> => {
     const newVerse = await fetchRandomVerse();
     if (newVerse) {
       setVerses(prev => [...prev, newVerse]);
+      return newVerse;
     }
+    return null;
   };
 
   useEffect(() => {

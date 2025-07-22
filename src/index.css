@@ -17,3 +17,12 @@ html, body, #root {
   height: 100%;
   overflow: hidden;
 }
+
+/* Allow scrolling for the verse viewer container */
+.verse-viewer-container {
+  overflow-y: auto !important;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
