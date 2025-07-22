@@ -11,9 +11,36 @@ interface VerseCardProps {
   verse: BibleVerse
 }
 
+const getRandomGradient = (verseId: string) => {
+  const medievalGradients = [
+    'bg-gradient-to-b from-brown-dark via-burgundy to-red-dark',
+    'bg-gradient-to-b from-stone via-burgundy to-brown-dark',
+    'bg-gradient-to-b from-red-dark via-brown-dark to-burgundy',
+    'bg-gradient-to-b from-burgundy via-stone to-red-dark',
+    'bg-gradient-to-b from-brown-dark via-red-dark to-stone',
+    'bg-gradient-to-br from-burgundy via-brown-dark to-red-dark',
+    'bg-gradient-to-bl from-stone via-burgundy to-brown-dark',
+    'bg-gradient-to-tr from-red-dark via-burgundy to-stone',
+    'bg-gradient-to-tl from-brown-dark via-stone to-burgundy',
+    'bg-gradient-to-b from-burgundy to-brown-dark',
+    'bg-gradient-to-b from-red-dark to-burgundy',
+    'bg-gradient-to-b from-stone to-red-dark'
+  ];
+  
+  // Use verse ID to create consistent but seemingly random selection
+  const hash = verseId.split('').reduce((a, b) => {
+    a = ((a << 5) - a) + b.charCodeAt(0);
+    return a & a;
+  }, 0);
+  
+  return medievalGradients[Math.abs(hash) % medievalGradients.length];
+};
+
 export default function VerseCard({ verse }: VerseCardProps) {
+  const gradientClass = getRandomGradient(verse.id);
+  
   return (
-    <div className="h-screen w-full bg-gradient-to-b from-brown-dark via-burgundy to-red-dark flex flex-col justify-center items-center p-8 relative overflow-hidden">
+    <div className={`h-screen w-full ${gradientClass} flex flex-col justify-center items-center p-8 relative overflow-hidden`}>
       {/* Decorative medieval border elements */}
       <div className="absolute top-8 left-8 w-16 h-16 border-l-4 border-t-4 border-gold opacity-60"></div>
       <div className="absolute top-8 right-8 w-16 h-16 border-r-4 border-t-4 border-gold opacity-60"></div>
@@ -40,11 +67,6 @@ export default function VerseCard({ verse }: VerseCardProps) {
       {/* Bottom ornament */}
       <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-gold to-transparent"></div>
 
-      {/* Swipe indicator */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-cream/60 animate-pulse">
-        <div className="w-0.5 h-8 bg-gradient-to-t from-cream/60 to-transparent mb-2"></div>
-        <p className="font-medieval text-sm tracking-wide">Swipe for more verses</p>
-      </div>
     </div>
   )
 }
