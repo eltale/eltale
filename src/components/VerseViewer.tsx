@@ -1,78 +1,78 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import VerseCard from './VerseCard';
-import SplashScreen from './SplashScreen';
-import { useBibleVerses } from '../hooks/useBibleVerses';
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useBibleVerses } from '../hooks/useBibleVerses'
+import SplashScreen from './SplashScreen'
+import VerseCard from './VerseCard'
 
 interface VerseViewerProps {
-  showSplash?: boolean;
+  showSplash?: boolean
 }
 
 export default function VerseViewer({ showSplash = false }: VerseViewerProps) {
-  const { verses, loading, loadNextVerse } = useBibleVerses();
-  const [loadedVerses, setLoadedVerses] = useState<any[]>([]);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const { verses, loading, loadNextVerse } = useBibleVerses()
+  const [loadedVerses, setLoadedVerses] = useState<any[]>([])
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   // Initialize with first verse and pre-load next one
   useEffect(() => {
     if (verses.length > 0 && loadedVerses.length === 0) {
-      setLoadedVerses([verses[0]]);
+      setLoadedVerses([verses[0]])
       // Pre-load the next verse immediately
-      loadNextVerse();
+      loadNextVerse()
     }
-  }, [verses, loadedVerses.length]);
+  }, [verses, loadedVerses.length])
 
   // Always ensure we have a next verse loaded
   useEffect(() => {
     const loadNextIfNeeded = async () => {
       if (loadedVerses.length > 0 && !isLoadingMore) {
         // Check if we need to load the next verse (always keep one ahead)
-        const totalAvailable = verses.length;
+        const totalAvailable = verses.length
         if (loadedVerses.length === totalAvailable) {
-          setIsLoadingMore(true);
-          const newVerse = await loadNextVerse();
+          setIsLoadingMore(true)
+          const newVerse = await loadNextVerse()
           if (newVerse) {
-            setLoadedVerses(prev => [...prev, newVerse]);
+            setLoadedVerses(prev => [...prev, newVerse])
           }
-          setIsLoadingMore(false);
+          setIsLoadingMore(false)
         }
       }
-    };
+    }
 
-    loadNextIfNeeded();
-  }, [loadedVerses.length, verses.length, isLoadingMore, loadNextVerse]);
+    loadNextIfNeeded()
+  }, [loadedVerses.length, verses.length, isLoadingMore, loadNextVerse])
 
   const handleScroll = useCallback(async () => {
-    if (!containerRef.current || isLoadingMore) return;
+    if (!containerRef.current || isLoadingMore) return
 
-    const container = containerRef.current;
-    const scrollTop = container.scrollTop;
-    const scrollHeight = container.scrollHeight;
-    const clientHeight = container.clientHeight;
-    
+    const container = containerRef.current
+    const scrollTop = container.scrollTop
+    const scrollHeight = container.scrollHeight
+    const clientHeight = container.clientHeight
+
     // More aggressive pre-loading - trigger when we're within 1.5 screen heights of the bottom
-    const triggerDistance = clientHeight * 1.5;
-    
+    const triggerDistance = clientHeight * 1.5
+
     if (scrollTop + clientHeight >= scrollHeight - triggerDistance) {
-      setIsLoadingMore(true);
-      
+      setIsLoadingMore(true)
+
       // Load next verse
-      const newVerse = await loadNextVerse();
+      const newVerse = await loadNextVerse()
       if (newVerse) {
-        setLoadedVerses(prev => [...prev, newVerse]);
+        setLoadedVerses(prev => [...prev, newVerse])
       }
-      
-      setIsLoadingMore(false);
+
+      setIsLoadingMore(false)
     }
-  }, [loadNextVerse, isLoadingMore]);
+  }, [loadNextVerse, isLoadingMore])
 
   useEffect(() => {
-    const container = containerRef.current;
+    const container = containerRef.current
     if (container) {
-      container.addEventListener('scroll', handleScroll, { passive: true });
-      return () => container.removeEventListener('scroll', handleScroll);
+      container.addEventListener('scroll', handleScroll, { passive: true })
+      return () => container.removeEventListener('scroll', handleScroll)
     }
-  }, [handleScroll]);
+  }, [handleScroll])
 
   if (loading && loadedVerses.length === 0) {
     return (
@@ -82,33 +82,32 @@ export default function VerseViewer({ showSplash = false }: VerseViewerProps) {
           <p className="font-medieval text-gold text-xl">Loading sacred texts...</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scrollbar-hidden verse-viewer-container"
-      style={{ 
-        scrollbarWidth: 'none', 
+      style={{
+        scrollbarWidth: 'none',
         msOverflowStyle: 'none',
         WebkitOverflowScrolling: 'touch',
         position: 'relative',
-        zIndex: 10
+        zIndex: 10,
       }}
     >
-      
       {showSplash && (
         <div className="snap-start snap-always">
           <SplashScreen />
         </div>
       )}
-      
+
       {loadedVerses.map((verse, index) => (
         <div key={verse.id} className="snap-start snap-always">
           <VerseCard verse={verse} />
         </div>
       ))}
     </div>
-  );
+  )
 }

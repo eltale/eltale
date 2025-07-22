@@ -1,20 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react'
 
 interface BibleVerse {
-  id: string;
-  text: string;
-  reference: string;
-  book: string;
-  chapter: number;
-  verse: number;
+  id: string
+  text: string
+  reference: string
+  book: string
+  chapter: number
+  verse: number
 }
 
 interface WEBVerseData {
-  type: string;
-  chapterNumber: number;
-  verseNumber: number;
-  sectionNumber?: number;
-  value: string;
+  type: string
+  chapterNumber: number
+  verseNumber: number
+  sectionNumber?: number
+  value: string
 }
 
 const BIBLE_BOOKS = [
@@ -83,77 +83,78 @@ const BIBLE_BOOKS = [
   { name: '2 John', filename: '2john' },
   { name: '3 John', filename: '3john' },
   { name: 'Jude', filename: 'jude' },
-  { name: 'Revelation', filename: 'revelation' }
-];
+  { name: 'Revelation', filename: 'revelation' },
+]
 
 export function useBibleVerses() {
-  const [verses, setVerses] = useState<BibleVerse[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [verses, setVerses] = useState<BibleVerse[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchRandomVerse = async (): Promise<BibleVerse | null> => {
     try {
-      setLoading(true);
-      setError(null);
-      
-      const randomBook = BIBLE_BOOKS[Math.floor(Math.random() * BIBLE_BOOKS.length)];
-      const response = await fetch(`https://raw.githubusercontent.com/TehShrike/world-english-bible/master/json/${randomBook.filename}.json`);
-      
+      setLoading(true)
+      setError(null)
+
+      const randomBook = BIBLE_BOOKS[Math.floor(Math.random() * BIBLE_BOOKS.length)]
+      const response = await fetch(
+        `https://raw.githubusercontent.com/TehShrike/world-english-bible/master/json/${randomBook.filename}.json`,
+      )
+
       if (!response.ok) {
-        throw new Error('Failed to fetch verse');
+        throw new Error('Failed to fetch verse')
       }
-      
-      const data: WEBVerseData[] = await response.json();
-      
+
+      const data: WEBVerseData[] = await response.json()
+
       // Filter for actual verse content (paragraph text or line text)
-      const verseData = data.filter(item => 
-        (item.type === 'paragraph text' || item.type === 'line text') && 
-        item.value && 
-        item.value.trim().length > 0
-      );
-      
+      const verseData = data.filter(
+        item =>
+          (item.type === 'paragraph text' || item.type === 'line text') && item.value && item.value.trim().length > 0,
+      )
+
       if (verseData.length > 0) {
-        const randomVerse = verseData[Math.floor(Math.random() * verseData.length)];
-        
+        const randomVerse = verseData[Math.floor(Math.random() * verseData.length)]
+
         // Clean up the text (remove extra spaces)
-        const cleanText = randomVerse.value.trim().replace(/\s+/g, ' ');
-        
+        const cleanText = randomVerse.value.trim().replace(/\s+/g, ' ')
+
         return {
           id: `${randomBook.name}-${randomVerse.chapterNumber}-${randomVerse.verseNumber}-${Date.now()}`,
           text: cleanText,
           reference: `${randomBook.name} ${randomVerse.chapterNumber}:${randomVerse.verseNumber}`,
           book: randomBook.name,
           chapter: randomVerse.chapterNumber,
-          verse: randomVerse.verseNumber
-        };
+          verse: randomVerse.verseNumber,
+        }
       }
-      
-      return null;
+
+      return null
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-      return null;
+      setError(err instanceof Error ? err.message : 'Unknown error')
+      return null
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const loadNextVerse = async (): Promise<BibleVerse | null> => {
-    const newVerse = await fetchRandomVerse();
+    const newVerse = await fetchRandomVerse()
     if (newVerse) {
-      setVerses(prev => [...prev, newVerse]);
-      return newVerse;
+      setVerses(prev => [...prev, newVerse])
+      return newVerse
     }
-    return null;
-  };
+    return null
+  }
 
   useEffect(() => {
-    loadNextVerse();
-  }, []);
+    loadNextVerse()
+  }, [])
 
   return {
     verses,
     loading,
     error,
-    loadNextVerse
-  };
+    loadNextVerse,
+  }
 }

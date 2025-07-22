@@ -1,132 +1,99 @@
-import React, { useEffect, useState } from 'react'
+import { Howl } from 'howler'
+import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Flipped, Flipper } from 'react-flip-toolkit'
 
-interface AnimatedTextProps {
-  text: string
-  className?: string
+import sound__text from '../assets/letter.wav'
+
+const random = Math.random
+const randomPick = <T = any,>(arr: readonly T[]) => arr[~~(random() * arr.length)] as T
+
+const textSound = new Howl({ src: sound__text, volume: 0.2, preload: true })
+
+type AnimatedTextProps = {
+  children: string
   isVisible?: boolean
-  delay?: number
-  cardId?: string // Add card ID to ensure consistent origin per card
+  onStart?: () => void
+  onComplete?: () => void
 }
 
-const AnimatedText: React.FC<AnimatedTextProps> = ({
-  text,
-  className = '',
-  isVisible = false,
-  delay = 0,
-  cardId = '',
-}) => {
-  const [animatedWords, setAnimatedWords] = useState<
-    Array<{
-      word: string
-      letters: Array<{
-        char: string
-        delay: number
-      }>
-      wordDelay: number
-    }>
-  >([])
-  const [cardOrigin, setCardOrigin] = useState({ originX: 0, originY: 0 })
-
-  // 8-point clock positions around screen border
-  const getRandomOrigin = (id: string) => {
-    const positions = [
-      { x: -100, y: -100 }, // top-left
-      { x: 50, y: -100 }, // top
-      { x: 200, y: -100 }, // top-right
-      { x: 200, y: 50 }, // right
-      { x: 200, y: 200 }, // bottom-right
-      { x: 50, y: 200 }, // bottom
-      { x: -100, y: 200 }, // bottom-left
-      { x: -100, y: 50 }, // left
-    ]
-
-    // Use card ID to create consistent but seemingly random selection
-    const hash = id.split('').reduce((a, b) => {
-      a = (a << 5) - a + b.charCodeAt(0)
-      return a & a
-    }, 0)
-
-    const position = positions[Math.abs(hash) % positions.length]
-    return {
-      originX: position.x,
-      originY: position.y,
-    }
-  }
+function AnimatedText({ children: text, isVisible, onStart, onComplete }: AnimatedTextProps) {
+  const words = text.split(/\s/)
+  const [show, setShow] = useState(false)
+  const [animating, setAnimating] = useState(true)
+  const uniqueTextHash = useMemo(() => `${random()}`, [])
 
   useEffect(() => {
-    if (text && cardId) {
-      const origin = getRandomOrigin(cardId)
-      setCardOrigin(origin)
+    setShow(true)
+  }, [])
 
-      // Split by words first, then letters within each word
-      const words = text.split(/\s+/).filter(word => word.length > 0)
-      let globalLetterIndex = 0
+  useEffect(() => {
+    if (animating) onStart?.()
+    else onComplete?.()
+  }, [animating]) // eslint-disable-line react-hooks/exhaustive-deps
 
-      const processedWords = words.map((word, wordIndex) => {
-        const letters = word.split('').map((char, letterIndex) => {
-          const letterDelay = globalLetterIndex * 20 + Math.random() * 25
-          globalLetterIndex++
-          return {
-            char,
-            delay: letterDelay,
-          }
-        })
+  const disableAnimation = () => setAnimating(false)
 
-        return {
-          word,
-          letters,
-          wordDelay: wordIndex * 50, // Slight word-level stagger
-        }
-      })
+  const randomX = randomPick([0, '50%', '100%'])
+  const randomY = randomPick([0, '50%', '100%'])
 
-      setAnimatedWords(processedWords)
-    }
-  }, [text, cardId])
+  const elText = (
+    <div>
+      {words.map((word, w) => {
+        const letters = word.split('')
 
-  return (
-    <span className={`${className}`}>
-      {animatedWords.map((wordObj, wordIndex) => (
-        <React.Fragment key={wordIndex}>
-          {/* Add space before word (except first word) */}
-          {wordIndex > 0 && (
-            <span
-              className="inline-block transition-all duration-1000 ease-out"
-              style={{
-                transform: isVisible
-                  ? 'translateX(0) translateY(0) scale(1)'
-                  : `translateX(${cardOrigin.originX}vw) translateY(${cardOrigin.originY}vh) scale(0.3)`,
-                opacity: isVisible ? 1 : 0,
-                transitionDelay: isVisible ? `${delay + wordObj.wordDelay - 25}ms` : '0ms',
-                filter: isVisible ? 'blur(0px)' : 'blur(3px)',
-              }}
-            >
-              {'\u00A0'}
-            </span>
-          )}
+        return (
+          <Fragment key={`${w}`}>
+            {w > 0 && ' '}
 
-          {/* Render each letter in the word */}
-          {wordObj.letters.map((letter, letterIndex) => (
-            <span
-              key={`${wordIndex}-${letterIndex}`}
-              className="inline-block transition-all duration-[3s] ease-out"
-              style={{
-                transform: isVisible
-                  ? 'translateX(0) translateY(0) scale(1) rotate(0deg)'
-                  : `translateX(${cardOrigin.originX}vw) translateY(${cardOrigin.originY}vh) scale(0.3) rotate(${
-                      Math.random() * 720 - 360
-                    }deg)`,
-                opacity: isVisible ? 1 : 0,
-                transitionDelay: isVisible ? `${delay + letter.delay}ms` : '0ms',
-                filter: isVisible ? 'blur(0px)' : 'blur(3px)',
-              }}
-            >
-              {letter.char}
-            </span>
-          ))}
-        </React.Fragment>
-      ))}
-    </span>
+            <div className="inline-block origin-center">
+              {letters.map((letter, l) => {
+                const elLetter = (
+                  <div
+                    className={`inline-block ${!show && 'absolute -translate-x-1/2 -translate-y-1/2 opacity-0'}`}
+                    style={{
+                      left: show ? undefined : randomX,
+                      top: show ? undefined : randomY,
+                    }}
+                  >
+                    {letter}
+                  </div>
+                )
+
+                const animatedOrStaticLetter = animating ? (
+                  <Flipped
+                    flipId={`Animatedtext-${w}-${l}-salt-${uniqueTextHash}`}
+                    stagger
+                    onStart={() => textSound.play()}
+                  >
+                    {elLetter}
+                  </Flipped>
+                ) : (
+                  elLetter
+                )
+
+                return <Fragment key={`${l}`}>{animatedOrStaticLetter}</Fragment>
+              })}
+            </div>
+          </Fragment>
+        )
+      })}
+    </div>
   )
+
+  const animatedOrStaticText = animating ? (
+    <Flipper
+      flipKey={`show=${show};text=${text}`}
+      staggerConfig={{ default: { speed: 0.2 } }}
+      spring="gentle"
+      onComplete={disableAnimation}
+    >
+      {elText}
+    </Flipper>
+  ) : (
+    elText
+  )
+
+  return animatedOrStaticText
 }
 
 export default AnimatedText
