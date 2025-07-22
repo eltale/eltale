@@ -11,12 +11,11 @@ const textSound = new Howl({ src: sound__text, volume: 0.2, preload: true })
 
 type AnimatedTextProps = {
   children: string
-  isVisible?: boolean
   onStart?: () => void
   onComplete?: () => void
 }
 
-function AnimatedText({ children: text, isVisible, onStart, onComplete }: AnimatedTextProps) {
+function AnimatedText({ children: text, onStart, onComplete }: AnimatedTextProps) {
   const words = text.split(/\s/)
   const [show, setShow] = useState(false)
   const [animating, setAnimating] = useState(true)

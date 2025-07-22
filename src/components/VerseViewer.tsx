@@ -103,7 +103,7 @@ export default function VerseViewer({ showSplash = false }: VerseViewerProps) {
         </div>
       )}
 
-      {loadedVerses.map((verse, index) => (
+      {loadedVerses.map(verse => (
         <div key={verse.id} className="snap-start snap-always">
           <VerseCard verse={verse} />
         </div>
