@@ -92,9 +92,9 @@ export default function VerseViewer() {
         zIndex: 10,
       }}
     >
-      {loadedVerses.map(verse => (
+      {loadedVerses.map((verse, index) => (
         <div key={verse.id} className="snap-start snap-always">
-          <VerseCard verse={verse} />
+          <VerseCard verse={verse} isFirstCard={index === 0} />
         </div>
       ))}
     </div>

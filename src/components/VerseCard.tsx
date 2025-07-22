@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver'
 import AnimatedText from './AnimatedText'
 
@@ -12,6 +13,7 @@ interface BibleVerse {
 
 interface VerseCardProps {
   verse: BibleVerse
+  isFirstCard?: boolean
 }
 
 const getRandomGradient = (verseId: string) => {
@@ -39,12 +41,53 @@ const getRandomGradient = (verseId: string) => {
   return medievalGradients[Math.abs(hash) % medievalGradients.length]
 }
 
-export default function VerseCard({ verse }: VerseCardProps) {
+export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps) {
   const gradientClass = getRandomGradient(verse.id)
   const { targetRef, hasIntersected } = useIntersectionObserver({
     threshold: 0.4,
     triggerOnce: true,
   })
+
+  // Check if this is the user's first time
+  const [isFirstTimeUser, setIsFirstTimeUser] = useState(false)
+  const [showSwipeHint, setShowSwipeHint] = useState(false)
+
+  useEffect(() => {
+    if (isFirstCard) {
+      const hasVisited = localStorage.getItem('eltale-visited')
+      if (!hasVisited) {
+        setIsFirstTimeUser(true)
+        localStorage.setItem('eltale-visited', 'true')
+      }
+    }
+  }, [isFirstCard])
+
+  useEffect(() => {
+    if (isFirstTimeUser && hasIntersected && isFirstCard) {
+      // Show swipe hint after text animation completes
+      const timer = setTimeout(() => {
+        setShowSwipeHint(true)
+      }, 2500) // After text animations finish
+
+      return () => clearTimeout(timer)
+    }
+  }, [isFirstTimeUser, hasIntersected, isFirstCard])
+
+  // Hide hint after scroll or interaction
+  useEffect(() => {
+    const handleScroll = () => setShowSwipeHint(false)
+    const handleTouch = () => setShowSwipeHint(false)
+
+    if (showSwipeHint) {
+      window.addEventListener('scroll', handleScroll, { passive: true })
+      window.addEventListener('touchstart', handleTouch, { passive: true })
+
+      return () => {
+        window.removeEventListener('scroll', handleScroll)
+        window.removeEventListener('touchstart', handleTouch)
+      }
+    }
+  }, [showSwipeHint])
 
   return (
     <div className="h-screen w-full flex items-center justify-center p-8 card-3d">
@@ -59,7 +102,9 @@ export default function VerseCard({ verse }: VerseCardProps) {
         <div className="absolute bottom-8 right-8 w-16 h-16 border-r-4 border-b-4 border-gold opacity-60"></div>
 
         {/* Central ornament */}
-        <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-gold to-transparent"></div>
+        {!showSwipeHint && (
+          <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-gold to-transparent" />
+        )}
 
         {/* Verse content */}
         <div className="max-w-4xl text-center space-y-8 relative z-10">
@@ -84,6 +129,19 @@ export default function VerseCard({ verse }: VerseCardProps) {
             </cite>
           </div>
         </div>
+
+        {/* First-time swipe hint */}
+        {showSwipeHint && (
+          <div className="absolute z-50 top-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-cream/70 animate-bounce">
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-0.5 h-4 bg-gradient-to-t from-cream/70 to-transparent"></div>
+              <svg className="w-4 h-4 text-cream/70" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7 14l5-5 5 5z" />
+              </svg>
+            </div>
+            <p className="font-medieval text-xs tracking-wide mt-1 text-center">Swipe up</p>
+          </div>
+        )}
       </div>
     </div>
   )
