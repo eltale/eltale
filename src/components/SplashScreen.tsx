@@ -25,7 +25,7 @@ export default function SplashScreen() {
         {/* Main content */}
         <div className="text-center relative z-10">
           <h1 className="font-medieval text-8xl text-gold drop-shadow-2xl mb-4 tracking-widest">
-            <AnimatedText isVisible={hasIntersected}>El Tale</AnimatedText>
+            <AnimatedText>El Tale</AnimatedText>
           </h1>
           <div
             className="w-48 h-1 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto transition-all duration-1000 ease-out"
