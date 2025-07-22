@@ -198,7 +198,7 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
               transformOrigin: 'center center',
             }}
           >
-            <blockquote className="font-medieval text-2xl md:text-3xl lg:text-4xl text-cream leading-relaxed tracking-wide">
+            <blockquote className="font-medieval text-2xl text-cream leading-relaxed tracking-wide">
               {hasIntersected && <AnimatedText>{verse.text}</AnimatedText>}
             </blockquote>
           </div>
@@ -214,7 +214,7 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
                   transitionDelay: hasIntersected ? '1000ms' : '0ms',
                 }}
               />
-              <cite className="font-medieval text-sm md:text-2xl text-gold-dark tracking-widest block whitespace-nowrap">
+              <cite className="font-medieval text-sm md text-gold-dark tracking-widest block whitespace-nowrap">
                 {verse.reference}
               </cite>
             </div>
