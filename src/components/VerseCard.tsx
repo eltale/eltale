@@ -214,7 +214,7 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
                   transitionDelay: hasIntersected ? '1000ms' : '0ms',
                 }}
               />
-              <cite className="font-medieval text-xl md:text-2xl text-gold-dark tracking-widest block whitespace-nowrap">
+              <cite className="font-medieval text-sm md:text-2xl text-gold-dark tracking-widest block whitespace-nowrap">
                 {verse.reference}
               </cite>
             </div>
