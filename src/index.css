@@ -69,9 +69,3 @@ html, body, #root {
     transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(20px);
   }
 }
-
-/* Hover enhancement */
-.card-inner:hover {
-  transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(40px) !important;
-  animation-play-state: paused;
-}
