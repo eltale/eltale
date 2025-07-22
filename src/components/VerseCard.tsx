@@ -1,3 +1,6 @@
+import AnimatedText from './AnimatedText';
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
+
 interface BibleVerse {
   id: string
   text: string
@@ -38,10 +41,17 @@ const getRandomGradient = (verseId: string) => {
 
 export default function VerseCard({ verse }: VerseCardProps) {
   const gradientClass = getRandomGradient(verse.id);
+  const { targetRef, hasIntersected } = useIntersectionObserver({
+    threshold: 0.4,
+    triggerOnce: true,
+  });
   
   return (
     <div className="h-screen w-full flex items-center justify-center p-8 card-3d">
-      <div className={`card-inner ${gradientClass} flex flex-col justify-center items-center p-8 relative overflow-hidden w-full max-w-md h-4/5 rounded-lg`}>
+      <div 
+        ref={targetRef}
+        className={`card-inner ${gradientClass} flex flex-col justify-center items-center p-8 relative overflow-hidden w-full max-w-md h-4/5 rounded-lg`}
+      >
       {/* Decorative medieval border elements */}
       <div className="absolute top-8 left-8 w-16 h-16 border-l-4 border-t-4 border-gold opacity-60"></div>
       <div className="absolute top-8 right-8 w-16 h-16 border-r-4 border-t-4 border-gold opacity-60"></div>
@@ -54,13 +64,30 @@ export default function VerseCard({ verse }: VerseCardProps) {
       {/* Verse content */}
       <div className="max-w-4xl text-center space-y-8 relative z-10">
         <blockquote className="font-medieval text-2xl md:text-3xl lg:text-4xl text-cream leading-relaxed tracking-wide">
-          "{verse.text}"
+          "
+          <AnimatedText 
+            text={verse.text}
+            isVisible={hasIntersected}
+            delay={200}
+          />
+          "
         </blockquote>
 
         <div className="space-y-2">
-          <div className="w-24 h-0.5 bg-gold mx-auto"></div>
+          <div 
+            className="w-24 h-0.5 bg-gold mx-auto transition-all duration-1000 ease-out"
+            style={{
+              opacity: hasIntersected ? 1 : 0,
+              transform: hasIntersected ? 'scaleX(1)' : 'scaleX(0)',
+              transitionDelay: hasIntersected ? '1000ms' : '0ms',
+            }}
+          />
           <cite className="font-medieval text-xl md:text-2xl text-gold-dark tracking-widest block">
-            {verse.reference}
+            <AnimatedText 
+              text={verse.reference}
+              isVisible={hasIntersected}
+              delay={1200}
+            />
           </cite>
         </div>
       </div>
