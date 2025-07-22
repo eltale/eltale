@@ -1,13 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useBibleVerses } from '../hooks/useBibleVerses'
-import SplashScreen from './SplashScreen'
 import VerseCard from './VerseCard'
 
-interface VerseViewerProps {
-  showSplash?: boolean
-}
-
-export default function VerseViewer({ showSplash = false }: VerseViewerProps) {
+export default function VerseViewer() {
   const { verses, loading, loadNextVerse } = useBibleVerses()
   const [loadedVerses, setLoadedVerses] = useState<any[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
@@ -97,12 +92,6 @@ export default function VerseViewer({ showSplash = false }: VerseViewerProps) {
         zIndex: 10,
       }}
     >
-      {showSplash && (
-        <div className="snap-start snap-always">
-          <SplashScreen />
-        </div>
-      )}
-
       {loadedVerses.map(verse => (
         <div key={verse.id} className="snap-start snap-always">
           <VerseCard verse={verse} />
