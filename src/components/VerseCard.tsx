@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver'
 import AnimatedText from './AnimatedText'
 
@@ -51,6 +51,11 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
   // Check if this is the user's first time
   const [isFirstTimeUser, setIsFirstTimeUser] = useState(false)
   const [showSwipeHint, setShowSwipeHint] = useState(false)
+  
+  // Auto-scaling text
+  const [textScale, setTextScale] = useState(1)
+  const textRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (isFirstCard) {
@@ -89,10 +94,53 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
     }
   }, [showSwipeHint])
 
+  // Auto-scale text to fit within decorative borders
+  useEffect(() => {
+    if (hasIntersected && textRef.current && containerRef.current) {
+      const checkTextFit = () => {
+        const textElement = textRef.current
+        const container = containerRef.current
+        if (!textElement || !container) return
+
+        // Reset scale to measure natural size
+        setTextScale(1)
+        
+        setTimeout(() => {
+          const containerRect = container.getBoundingClientRect()
+          const textRect = textElement.getBoundingClientRect()
+          
+          // Calculate available space (excluding decorative borders and padding)
+          const availableWidth = containerRect.width - 160 // 80px border + padding on each side
+          const availableHeight = containerRect.height - 200 // Top/bottom margins + reference space
+          
+          // Calculate scale needed to fit
+          const widthScale = availableWidth / textRect.width
+          const heightScale = availableHeight / textRect.height
+          
+          // Use the smaller scale factor to ensure both dimensions fit
+          const scale = Math.min(widthScale, heightScale, 1) // Don't scale up, only down
+          
+          if (scale < 1) {
+            setTextScale(scale * 0.95) // Add small buffer
+          }
+        }, 100) // Small delay to ensure DOM is updated
+      }
+
+      checkTextFit()
+      
+      // Re-check on window resize
+      window.addEventListener('resize', checkTextFit)
+      return () => window.removeEventListener('resize', checkTextFit)
+    }
+  }, [hasIntersected, verse.text])
+
   return (
     <div className="h-screen w-full flex items-center justify-center p-8 card-3d">
       <div
-        ref={targetRef}
+        ref={(el) => {
+          targetRef.current = el
+          containerRef.current = el
+        }}
         className={`card-inner ${gradientClass} flex flex-col justify-center items-center p-8 relative overflow-hidden w-full max-w-md h-4/5 rounded-lg`}
       >
         {/* Decorative medieval border elements */}
@@ -107,7 +155,14 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
         )}
 
         {/* Verse content */}
-        <div className="max-w-4xl text-center space-y-8 relative z-10">
+        <div 
+          ref={textRef}
+          className="max-w-4xl text-center space-y-8 relative z-10 transition-transform duration-300 ease-out"
+          style={{
+            transform: `scale(${textScale})`,
+            transformOrigin: 'center center'
+          }}
+        >
           <blockquote className="font-medieval text-2xl md:text-3xl lg:text-4xl text-cream leading-relaxed tracking-wide">
             {hasIntersected && <AnimatedText>{verse.text}</AnimatedText>}
           </blockquote>
