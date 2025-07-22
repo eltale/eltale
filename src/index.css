@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp:400&display=swap');
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
 
 @theme {
-  --font-medieval: MedievalSharp, cursive;
+  --font-medieval: "MedievalSharp", serif;
   
   --color-gold: #D4AF37;
   --color-gold-dark: #B8860B;
