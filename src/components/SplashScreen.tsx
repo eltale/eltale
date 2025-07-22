@@ -30,6 +30,7 @@ export default function SplashScreen() {
             isVisible={hasIntersected}
             delay={100}
             className="animate-pulse"
+            cardId="splash-title"
           />
         </h1>
         <div 
@@ -45,6 +46,7 @@ export default function SplashScreen() {
             text="Sacred Texts in Motion"
             isVisible={hasIntersected}
             delay={1000}
+            cardId="splash-subtitle"
           />
         </p>
       </div>
@@ -67,6 +69,7 @@ export default function SplashScreen() {
             text="Swipe for more verses"
             isVisible={hasIntersected}
             delay={1600}
+            cardId="splash-swipe"
           />
         </p>
       </div>

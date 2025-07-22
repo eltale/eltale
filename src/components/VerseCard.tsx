@@ -69,6 +69,7 @@ export default function VerseCard({ verse }: VerseCardProps) {
             text={verse.text}
             isVisible={hasIntersected}
             delay={200}
+            cardId={verse.id}
           />
           "
         </blockquote>
@@ -87,6 +88,7 @@ export default function VerseCard({ verse }: VerseCardProps) {
               text={verse.reference}
               isVisible={hasIntersected}
               delay={1200}
+              cardId={verse.id + '-ref'}
             />
           </cite>
         </div>
