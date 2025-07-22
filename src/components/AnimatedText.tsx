@@ -15,12 +15,14 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
   delay = 0,
   cardId = '',
 }) => {
-  const [animatedLetters, setAnimatedLetters] = useState<
+  const [animatedWords, setAnimatedWords] = useState<
     Array<{
-      char: string
-      isSpace: boolean
-      isLineBreak: boolean
-      delay: number
+      word: string
+      letters: Array<{
+        char: string
+        delay: number
+      }>
+      wordDelay: number
     }>
   >([])
   const [cardOrigin, setCardOrigin] = useState({ originX: 0, originY: 0 })
@@ -56,45 +58,73 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
       const origin = getRandomOrigin(cardId)
       setCardOrigin(origin)
 
-      const letters = text.split('').map((char, index) => {
+      // Split by words first, then letters within each word
+      const words = text.split(/\s+/).filter(word => word.length > 0)
+      let globalLetterIndex = 0
+
+      const processedWords = words.map((word, wordIndex) => {
+        const letters = word.split('').map((char, letterIndex) => {
+          const letterDelay = globalLetterIndex * 20 + Math.random() * 25
+          globalLetterIndex++
+          return {
+            char,
+            delay: letterDelay,
+          }
+        })
+
         return {
-          char,
-          isSpace: char === ' ',
-          isLineBreak: char === '\n',
-          delay: index * 25 + Math.random() * 30, // Reduced staggering for smoother effect
+          word,
+          letters,
+          wordDelay: wordIndex * 50, // Slight word-level stagger
         }
       })
-      setAnimatedLetters(letters)
+
+      setAnimatedWords(processedWords)
     }
   }, [text, cardId])
 
   return (
-    <span className={`inline ${className}`}>
-      {animatedLetters.map((letter, index) => {
-        if (letter.isLineBreak) {
-          return <br key={index} />
-        }
+    <span className={`${className}`}>
+      {animatedWords.map((wordObj, wordIndex) => (
+        <React.Fragment key={wordIndex}>
+          {/* Add space before word (except first word) */}
+          {wordIndex > 0 && (
+            <span
+              className="inline-block transition-all duration-1000 ease-out"
+              style={{
+                transform: isVisible
+                  ? 'translateX(0) translateY(0) scale(1)'
+                  : `translateX(${cardOrigin.originX}vw) translateY(${cardOrigin.originY}vh) scale(0.3)`,
+                opacity: isVisible ? 1 : 0,
+                transitionDelay: isVisible ? `${delay + wordObj.wordDelay - 25}ms` : '0ms',
+                filter: isVisible ? 'blur(0px)' : 'blur(3px)',
+              }}
+            >
+              {'\u00A0'}
+            </span>
+          )}
 
-        return (
-          <span
-            key={index}
-            className="inline-block transition-all duration-700 ease-out"
-            style={{
-              transform: isVisible
-                ? 'translateX(0) translateY(0) scale(1) rotate(0deg)'
-                : `translateX(${cardOrigin.originX}vw) translateY(${cardOrigin.originY}vh) scale(0.3) rotate(${
-                    Math.random() * 720 - 360
-                  }deg)`,
-              opacity: isVisible ? 1 : 0,
-              transitionDelay: isVisible ? `${delay + letter.delay}ms` : '0ms',
-              filter: isVisible ? 'blur(0px)' : 'blur(3px)',
-              marginRight: letter.isSpace ? '0.25em' : '0',
-            }}
-          >
-            {letter.isSpace ? '\u00A0' : letter.char}
-          </span>
-        )
-      })}
+          {/* Render each letter in the word */}
+          {wordObj.letters.map((letter, letterIndex) => (
+            <span
+              key={`${wordIndex}-${letterIndex}`}
+              className="inline-block transition-all duration-[3s] ease-out"
+              style={{
+                transform: isVisible
+                  ? 'translateX(0) translateY(0) scale(1) rotate(0deg)'
+                  : `translateX(${cardOrigin.originX}vw) translateY(${cardOrigin.originY}vh) scale(0.3) rotate(${
+                      Math.random() * 720 - 360
+                    }deg)`,
+                opacity: isVisible ? 1 : 0,
+                transitionDelay: isVisible ? `${delay + letter.delay}ms` : '0ms',
+                filter: isVisible ? 'blur(0px)' : 'blur(3px)',
+              }}
+            >
+              {letter.char}
+            </span>
+          ))}
+        </React.Fragment>
+      ))}
     </span>
   )
 }
