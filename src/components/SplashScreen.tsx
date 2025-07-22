@@ -39,7 +39,7 @@ export default function SplashScreen() {
         </div>
 
         {/* Bottom ornament */}
-        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-gold to-transparent"></div>
+        {/* <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-gold to-transparent"></div> */}
 
         {/* Swipe indicator */}
         <div
@@ -51,7 +51,7 @@ export default function SplashScreen() {
           }}
         >
           <div className="w-0.5 h-8 bg-gradient-to-t from-cream/60 to-transparent mb-2"></div>
-          <p className="font-medieval text-sm tracking-wide">Swipe for more verses</p>
+          <p className="font-medieval text-sm tracking-wide">Swipe up for more verses</p>
         </div>
       </div>
     </div>

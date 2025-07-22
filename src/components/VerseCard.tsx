@@ -66,10 +66,13 @@ export default function VerseCard({ verse }: VerseCardProps) {
           <blockquote className="font-medieval text-2xl md:text-3xl lg:text-4xl text-cream leading-relaxed tracking-wide">
             {hasIntersected && <AnimatedText>{verse.text}</AnimatedText>}
           </blockquote>
+        </div>
 
-          <div className="space-y-2">
+        {/* Bottom ornament */}
+        <div className="absolute h-1 bottom-12 left-1/2 transform -translate-x-1/2">
+          <div className="relative space-y-2 flex flex-col items-center">
             <div
-              className="w-24 h-0.5 bg-gold mx-auto transition-all duration-1000 ease-out"
+              className="w-32 h-1 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto transition-all duration-1000 ease-out"
               style={{
                 opacity: hasIntersected ? 1 : 0,
                 transform: hasIntersected ? 'scaleX(1)' : 'scaleX(0)',
@@ -81,9 +84,6 @@ export default function VerseCard({ verse }: VerseCardProps) {
             </cite>
           </div>
         </div>
-
-        {/* Bottom ornament */}
-        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-gold to-transparent"></div>
       </div>
     </div>
   )
