@@ -1,1 +1,19 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+
+@theme {
+  --font-medieval: MedievalSharp, cursive;
+  
+  --color-gold: #D4AF37;
+  --color-gold-dark: #B8860B;
+  --color-burgundy: #722F37;
+  --color-red-dark: #4A1E1E;
+  --color-cream: #F5F5DC;
+  --color-brown-dark: #2F1B14;
+  --color-stone: #8B7355;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
