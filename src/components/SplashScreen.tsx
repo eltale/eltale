@@ -1,6 +1,7 @@
 export default function SplashScreen() {
   return (
-    <div className="h-screen w-full bg-gradient-to-b from-brown-dark via-red-dark to-burgundy flex flex-col justify-center items-center p-8 relative overflow-hidden snap-start snap-always">
+    <div className="h-screen w-full flex items-center justify-center p-8 snap-start snap-always card-3d">
+      <div className="card-inner bg-gradient-to-b from-brown-dark via-red-dark to-burgundy flex flex-col justify-center items-center p-8 relative overflow-hidden w-full max-w-md h-4/5 rounded-lg">
       {/* Decorative medieval border elements */}
       <div className="absolute top-8 left-8 w-16 h-16 border-l-4 border-t-4 border-gold opacity-60"></div>
       <div className="absolute top-8 right-8 w-16 h-16 border-r-4 border-t-4 border-gold opacity-60"></div>
@@ -28,6 +29,7 @@ export default function SplashScreen() {
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-cream/60 animate-pulse">
         <div className="w-0.5 h-8 bg-gradient-to-t from-cream/60 to-transparent mb-2"></div>
         <p className="font-medieval text-sm tracking-wide">Swipe for more verses</p>
+      </div>
       </div>
     </div>
   );

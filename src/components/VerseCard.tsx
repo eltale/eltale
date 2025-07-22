@@ -40,7 +40,8 @@ export default function VerseCard({ verse }: VerseCardProps) {
   const gradientClass = getRandomGradient(verse.id);
   
   return (
-    <div className={`h-screen w-full ${gradientClass} flex flex-col justify-center items-center p-8 relative overflow-hidden`}>
+    <div className="h-screen w-full flex items-center justify-center p-8 card-3d">
+      <div className={`card-inner ${gradientClass} flex flex-col justify-center items-center p-8 relative overflow-hidden w-full max-w-md h-4/5 rounded-lg`}>
       {/* Decorative medieval border elements */}
       <div className="absolute top-8 left-8 w-16 h-16 border-l-4 border-t-4 border-gold opacity-60"></div>
       <div className="absolute top-8 right-8 w-16 h-16 border-r-4 border-t-4 border-gold opacity-60"></div>
@@ -67,6 +68,7 @@ export default function VerseCard({ verse }: VerseCardProps) {
       {/* Bottom ornament */}
       <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-gold to-transparent"></div>
 
+      </div>
     </div>
   )
 }
