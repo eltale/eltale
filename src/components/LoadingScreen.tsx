@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react'
-import stainedglass from '../assets/splash.jpg'
+import stainedglass from '../assets/loading.jpg'
 
-interface SplashScreenProps {
-  onComplete: () => void
-}
-
-export default function SplashScreen({ onComplete }: SplashScreenProps) {
+export default function LoadingScreen() {
   // Card scaling to fit window
   const [cardScale, setCardScale] = useState(1)
 
@@ -44,13 +40,11 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
         }}
       >
         <div
-          // className="card-inner bg-gradient-to-b from-brown-dark via-red-dark to-burgundy flex flex-col justify-center items-center p-8 relative overflow-hidden rounded-lg cursor-pointer w-full h-full"
           className={`card-inner flex flex-col justify-center items-center p-8 relative overflow-hidden rounded-lg w-full h-full bg-cover bg-center`}
           style={{
             backgroundImage: `url('${stainedglass}')`,
             backgroundSize: 'cover',
           }}
-          onClick={onComplete}
         />
       </div>
     </div>

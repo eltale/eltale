@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useBibleVerses } from '../hooks/useBibleVerses'
+import LoadingScreen from './LoadingScreen'
 import VerseCard from './VerseCard'
 
 export default function VerseViewer() {
@@ -70,14 +71,7 @@ export default function VerseViewer() {
   }, [handleScroll])
 
   if (loading && loadedVerses.length === 0) {
-    return (
-      <div className="h-screen w-full bg-gradient-to-b from-brown-dark to-burgundy flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="font-medieval text-gold text-xl">Loading sacred texts...</p>
-        </div>
-      </div>
-    )
+    return <LoadingScreen />
   }
 
   return (
