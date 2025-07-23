@@ -192,7 +192,7 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
             backgroundSize: 'cover',
           }}
         >
-          <PngFont text={verse.text} className="text-center" letterClassName="h-12 w-auto mx-0.5" />
+          <PngFont text={verse.text} className="max-w-full px-4" />
         </div>
       </div>
     </div>

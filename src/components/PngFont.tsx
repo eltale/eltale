@@ -53,13 +53,13 @@ interface LetterProps {
 function PngLetter({ char, className }: LetterProps) {
   const upperChar = char.toUpperCase() as keyof typeof letterImages
   
-  // Handle spaces and unsupported characters
+  // Handle spaces
   if (char === ' ') {
-    return <span className="inline-block w-4" />
+    return <span className="inline-block w-6" />
   }
   
   if (!letterImages[upperChar]) {
-    return <span className={`inline-block ${className || ''}`}>{char}</span>
+    return null
   }
 
   const [imageSrc, setImageSrc] = useState<string>('')
@@ -70,32 +70,74 @@ function PngLetter({ char, className }: LetterProps) {
     })
   }, [upperChar])
 
-  if (!imageSrc) return <span className="inline-block w-8 h-8" />
+  if (!imageSrc) {
+    return <span className="inline-block w-12 h-12" />
+  }
 
   return (
     <img
       src={imageSrc}
       alt={char}
-      className={`inline-block ${className || 'h-8 w-auto'}`}
-      style={{ imageRendering: 'crisp-edges' }}
+      className={`inline-block ${className || 'h-12'}`}
+      style={{ 
+        imageRendering: 'crisp-edges',
+        width: '3rem',
+        height: '3rem',
+        objectFit: 'contain'
+      }}
     />
   )
 }
 
-export default function PngFont({ text, className = '', letterClassName }: PngFontProps) {
-  const letters = useMemo(() => {
-    return text.split('').map((char, index) => (
-      <PngLetter
-        key={`${char}-${index}`}
-        char={char}
-        className={letterClassName}
-      />
-    ))
-  }, [text, letterClassName])
+function preprocessText(text: string): string {
+  return text
+    .replace(/['"]/g, '') // Remove quotes and apostrophes
+    .replace(/[,.!?;:]/g, ' ') // Replace punctuation with spaces
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim()
+    .toUpperCase()
+}
+
+interface WordProps {
+  word: string
+  letterClassName?: string
+}
+
+function PngWord({ word, letterClassName }: WordProps) {
+  const letters = word.split('').map((char, index) => (
+    <PngLetter
+      key={`${char}-${index}`}
+      char={char}
+      className={letterClassName}
+    />
+  ))
 
   return (
-    <div className={`inline-flex flex-wrap items-baseline ${className}`}>
+    <span className="inline-flex items-baseline">
       {letters}
+    </span>
+  )
+}
+
+export default function PngFont({ text, className = '', letterClassName }: PngFontProps) {
+  const processedWords = useMemo(() => {
+    const cleanText = preprocessText(text)
+    return cleanText.split(' ').filter(word => word.length > 0)
+  }, [text])
+
+  const wordComponents = useMemo(() => {
+    return processedWords.map((word, index) => (
+      <PngWord
+        key={`${word}-${index}`}
+        word={word}
+        letterClassName={letterClassName}
+      />
+    ))
+  }, [processedWords, letterClassName])
+
+  return (
+    <div className={`flex flex-wrap justify-center items-baseline gap-x-6 gap-y-2 ${className}`}>
+      {wordComponents}
     </div>
   )
 }
