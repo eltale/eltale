@@ -1,6 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import stainedglass_1 from '../assets/stainedglass-1.jpg'
+import stainedglass_2 from '../assets/stainedglass-2.jpg'
+import stainedglass_3 from '../assets/stainedglass-3.jpg'
+import stainedglass_4 from '../assets/stainedglass-4.jpg'
+import stainedglass_5 from '../assets/stainedglass-5.jpg'
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver'
+import PngFont from './PngFont'
 
 interface BibleVerse {
   id: string
@@ -42,6 +47,11 @@ const getRandomGradient = (verseId: string) => {
 }
 
 export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps) {
+  const stainedglass = useMemo(() => {
+    const stainedglasses = [stainedglass_1, stainedglass_2, stainedglass_3, stainedglass_4, stainedglass_5]
+    return stainedglasses[Math.floor(Math.random() * stainedglasses.length)]
+  }, [])
+
   const gradientClass = getRandomGradient(verse.id)
   const { targetRef, hasIntersected } = useIntersectionObserver({
     threshold: 0.4,
@@ -178,10 +188,11 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
           }}
           className={`card-inner flex flex-col justify-center items-center p-8 relative overflow-hidden rounded-lg w-full h-full bg-cover bg-center`}
           style={{
-            backgroundImage: `url('${stainedglass_1}')`,
+            backgroundImage: `url('${stainedglass}')`,
+            backgroundSize: 'cover',
           }}
         >
-          <div className="text-4xl text-neutral-900 font-extrabold font-medieval">{verse.text}</div>
+          <PngFont text={verse.text} className="text-center" letterClassName="h-12 w-auto mx-0.5" />
         </div>
       </div>
     </div>
