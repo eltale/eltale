@@ -55,7 +55,7 @@ function PngLetter({ char, className }: LetterProps) {
   
   // Handle spaces
   if (char === ' ') {
-    return <span className="inline-block w-6" />
+    return <span className="inline-block w-3" />
   }
   
   if (!letterImages[upperChar]) {
@@ -71,7 +71,7 @@ function PngLetter({ char, className }: LetterProps) {
   }, [upperChar])
 
   if (!imageSrc) {
-    return <span className="inline-block w-12 h-12" />
+    return <span className="inline-block w-7 h-7" />
   }
 
   return (
@@ -81,8 +81,8 @@ function PngLetter({ char, className }: LetterProps) {
       className={`inline-block ${className || 'h-12'}`}
       style={{ 
         imageRendering: 'crisp-edges',
-        width: '3rem',
-        height: '3rem',
+        width: '1.75rem',
+        height: '1.75rem',
         objectFit: 'contain'
       }}
     />
@@ -125,19 +125,17 @@ export default function PngFont({ text, className = '', letterClassName }: PngFo
     return cleanText.split(' ').filter(word => word.length > 0)
   }, [text])
 
-  const wordComponents = useMemo(() => {
-    return processedWords.map((word, index) => (
-      <PngWord
-        key={`${word}-${index}`}
-        word={word}
-        letterClassName={letterClassName}
-      />
-    ))
-  }, [processedWords, letterClassName])
-
   return (
-    <div className={`flex flex-wrap justify-center items-baseline gap-x-6 gap-y-2 ${className}`}>
-      {wordComponents}
+    <div className={`text-center leading-relaxed ${className}`}>
+      <div className="inline-flex flex-wrap justify-center items-baseline gap-x-3 gap-y-1">
+        {processedWords.map((word, index) => (
+          <PngWord
+            key={`${word}-${index}`}
+            word={word}
+            letterClassName={letterClassName}
+          />
+        ))}
+      </div>
     </div>
   )
 }
