@@ -70,8 +70,9 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
     <StainedGlassCard
       useIntersectionObserver={true}
       innerRef={containerRef}
+      enableFlip={true}
+      frontFaceContent={<PngFont text={verse.text} className="max-w-full px-4" />}
     >
-      <PngFont text={verse.text} className="max-w-full px-4" />
     </StainedGlassCard>
   )
 }
