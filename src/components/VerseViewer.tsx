@@ -77,7 +77,7 @@ export default function VerseViewer() {
   return (
     <div
       ref={containerRef}
-      className="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scrollbar-hidden verse-viewer-container"
+      className="h-full w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scrollbar-hidden verse-viewer-container"
       style={{
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
@@ -87,7 +87,7 @@ export default function VerseViewer() {
       }}
     >
       {loadedVerses.map((verse, index) => (
-        <div key={verse.id} className="snap-start snap-always">
+        <div key={verse.id} className="snap-start snap-always h-full">
           <VerseCard verse={verse} isFirstCard={index === 0} />
         </div>
       ))}

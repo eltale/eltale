@@ -65,7 +65,7 @@ export default function StainedGlassCard({
   }, [])
 
   return (
-    <div className={`h-screen w-full flex items-center justify-center card-3d ${className}`}>
+    <div className={`h-full w-full flex items-center justify-center card-3d ${className}`}>
       <div
         className="relative"
         style={{
