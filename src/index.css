@@ -31,7 +31,7 @@ body,
 
 /* 3D Card Effects */
 .animate-3d-wobble {
-  animation: cardWobble 8s ease-in-out infinite;
+  animation: cardWobble 20s ease-in-out infinite;
   transform-style: preserve-3d;
 }
 
@@ -46,43 +46,22 @@ body,
 
 @keyframes cardWobble {
   0% {
-    transform: perspective(1000px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateZ(10px);
+    transform: rotateX(0deg) rotateY(0deg);
   }
-  8.33% {
-    transform: perspective(1000px) rotateX(-1deg) rotateY(-2deg) rotateZ(-0.5deg) translateZ(15px);
+  20% {
+    transform: rotateX(5deg) rotateY(10deg);
   }
-  16.66% {
-    transform: perspective(1000px) rotateX(-0.5deg) rotateY(-3deg) rotateZ(-1deg) translateZ(20px);
+  40% {
+    transform: rotateX(-5deg) rotateY(10deg);
   }
-  25% {
-    transform: perspective(1000px) rotateX(0.5deg) rotateY(-2deg) rotateZ(-0.5deg) translateZ(15px);
+  60% {
+    transform: rotateX(-5deg) rotateY(-10deg);
   }
-  33.33% {
-    transform: perspective(1000px) rotateX(1deg) rotateY(0deg) rotateZ(0deg) translateZ(10px);
-  }
-  41.66% {
-    transform: perspective(1000px) rotateX(0.5deg) rotateY(2deg) rotateZ(0.5deg) translateZ(15px);
-  }
-  50% {
-    transform: perspective(1000px) rotateX(-0.5deg) rotateY(3deg) rotateZ(1deg) translateZ(20px);
-  }
-  58.33% {
-    transform: perspective(1000px) rotateX(-1deg) rotateY(2deg) rotateZ(0.5deg) translateZ(15px);
-  }
-  66.66% {
-    transform: perspective(1000px) rotateX(-0.5deg) rotateY(0deg) rotateZ(0deg) translateZ(10px);
-  }
-  75% {
-    transform: perspective(1000px) rotateX(0deg) rotateY(-1deg) rotateZ(-0.5deg) translateZ(15px);
-  }
-  83.33% {
-    transform: perspective(1000px) rotateX(0.5deg) rotateY(-1.5deg) rotateZ(-0.8deg) translateZ(18px);
-  }
-  91.66% {
-    transform: perspective(1000px) rotateX(-0.2deg) rotateY(-0.5deg) rotateZ(-0.3deg) translateZ(12px);
+  80% {
+    transform: rotateX(5deg) rotateY(-10deg);
   }
   100% {
-    transform: perspective(1000px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateZ(10px);
+    transform: rotateX(0deg) rotateY(0deg);
   }
 }
 
