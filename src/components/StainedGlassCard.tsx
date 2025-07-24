@@ -61,14 +61,6 @@ export default function StainedGlassCard({
   // Flip state management
   const [flipState, setFlipState] = useState<'front' | 'back'>(initialFlipState)
 
-  const handleCardClick = () => {
-    if (enableFlip) {
-      setFlipState(prev => (prev === 'front' ? 'back' : 'front'))
-    }
-    if (onClick) {
-      onClick()
-    }
-  }
 
   useEffect(() => {
     const updateCardScale = () => {
@@ -83,14 +75,11 @@ export default function StainedGlassCard({
     // Original single-sided card
     return (
       <div
-        className={`h-full w-full flex items-center justify-center ${className}`}
-        style={{
-          perspective: '1200px',
-          transformStyle: 'preserve-3d',
-        }}
+        className={`h-full w-full flex items-center justify-center group ${className}`}
+        style={{ perspective: '1000px' }}
       >
         <div
-          className="relative"
+          className="animate-3d-wobble group-active:animate-none"
           style={{
             width: '360px',
             height: '640px',
@@ -99,36 +88,45 @@ export default function StainedGlassCard({
           }}
         >
           <div
-            ref={el => {
-              if (enableIntersectionObserver) {
-                targetRef.current = el
-              }
-              if (innerRef && el) {
-                innerRef.current = el
-              }
-            }}
-            className={`card-inner flex flex-col justify-center items-center p-8 relative overflow-hidden rounded-lg w-full h-full border border-[rgba(212,175,55,0.2)] bg-gray-900 ${
-              onClick ? 'cursor-pointer' : ''
-            }`}
-            onClick={onClick}
+            className="transition-transform ease-in-out duration-1000 scale-90 drop-shadow-2xl group-active:scale-100 group-active:duration-300 group-active:drop-shadow-none"
+            style={{ perspective: '1000px' }}
           >
-            {enableLightEffects && (
-              <div className="light-source absolute -top-[20%] -left-[20%] w-[140%] h-[140%] pointer-events-none z-10"></div>
-            )}
             <div
-              className="absolute inset-0 w-full h-full pointer-events-none z-30 mix-blend-overlay opacity-100"
-              style={{
-                backgroundImage: `url('${stainedglass}')`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
+              ref={el => {
+                if (enableIntersectionObserver) {
+                  targetRef.current = el
+                }
+                if (innerRef && el) {
+                  innerRef.current = el
+                }
               }}
-            ></div>
-            {enableLightEffects && (
-              <div className="light-overlay absolute inset-0 w-full h-full pointer-events-none z-20 mix-blend-screen"></div>
-            )}
-            {children && (
-              <div className="relative z-40 flex flex-col justify-center items-center w-full h-full">{children}</div>
-            )}
+              className={`flex flex-col justify-center items-center p-8 relative overflow-hidden rounded-lg w-full h-full border border-[rgba(212,175,55,0.2)] bg-gray-900 ${
+                onClick ? 'cursor-pointer' : ''
+              }`}
+              style={{
+                width: '360px',
+                height: '640px',
+              }}
+              onClick={onClick}
+            >
+              {enableLightEffects && (
+                <div className="light-source absolute -top-[20%] -left-[20%] w-[140%] h-[140%] pointer-events-none z-10"></div>
+              )}
+              <div
+                className="absolute inset-0 w-full h-full pointer-events-none z-30 mix-blend-overlay opacity-100"
+                style={{
+                  backgroundImage: `url('${stainedglass}')`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              ></div>
+              {enableLightEffects && (
+                <div className="light-overlay absolute inset-0 w-full h-full pointer-events-none z-20 mix-blend-screen"></div>
+              )}
+              {children && (
+                <div className="relative z-40 flex flex-col justify-center items-center w-full h-full">{children}</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -139,13 +137,10 @@ export default function StainedGlassCard({
   return (
     <div
       className={`h-full w-full flex items-center justify-center group font-medieval text-4xl ${className}`}
-      style={{
-        perspective: '1200px',
-        transformStyle: 'preserve-3d',
-      }}
+      style={{ perspective: '1000px' }}
     >
       <div
-        className="relative"
+        className="animate-3d-wobble group-active:animate-none"
         style={{
           width: '360px',
           height: '640px',
@@ -154,10 +149,8 @@ export default function StainedGlassCard({
         }}
       >
         <div
-          className="card-inner relative w-full h-full"
-          style={{
-            transformStyle: 'preserve-3d',
-          }}
+          className="transition-transform ease-in-out duration-1000 scale-90 drop-shadow-2xl group-active:scale-100 group-active:duration-300 group-active:drop-shadow-none"
+          style={{ perspective: '1000px' }}
         >
           <div
             ref={el => {
@@ -168,60 +161,70 @@ export default function StainedGlassCard({
                 innerRef.current = el
               }
             }}
-            className="relative w-full h-full cursor-pointer transition-transform duration-700 ease-in-out"
+            className="relative transition-transform duration-500"
             style={{
-              transformStyle: 'preserve-3d',
+              width: '360px',
+              height: '640px',
               transform: flipState === 'front' ? 'rotateY(180deg)' : 'rotateY(0deg)',
-            }}
-            onClick={handleCardClick}
-          >
-          {/* Back Face - Stained Glass */}
-          <div
-            className={`absolute inset-0 flex flex-col justify-center items-center p-8 overflow-hidden rounded-lg w-full h-full border border-[rgba(212,175,55,0.2)] bg-gray-900 ${
-              flipState === 'front' ? 'rotate-y-180' : ''
-            }`}
-            style={{
-              backfaceVisibility: 'hidden',
               transformStyle: 'preserve-3d',
             }}
           >
-            {enableLightEffects && (
-              <div className="light-source absolute -top-[20%] -left-[20%] w-[140%] h-[140%] pointer-events-none z-10"></div>
-            )}
+            {/* Back Face - Stained Glass */}
             <div
-              className="absolute inset-0 w-full h-full pointer-events-none z-30 mix-blend-overlay opacity-100"
+              className="absolute flex flex-col justify-center items-center p-8 overflow-hidden rounded-lg w-full h-full border border-[rgba(212,175,55,0.2)] bg-gray-900 cursor-pointer"
               style={{
-                backgroundImage: `url('${stainedglass}')`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
+                width: '360px',
+                height: '640px',
+                backfaceVisibility: 'hidden',
               }}
-            ></div>
-            {enableLightEffects && (
-              <div className="light-overlay absolute inset-0 w-full h-full pointer-events-none z-20 mix-blend-screen"></div>
-            )}
-            {children && (
-              <div className="relative z-40 flex flex-col justify-center items-center w-full h-full">{children}</div>
-            )}
-          </div>
+              onClick={() => {
+                setFlipState('front')
+                if (onClick) onClick()
+              }}
+            >
+              {enableLightEffects && (
+                <div className="light-source absolute -top-[20%] -left-[20%] w-[140%] h-[140%] pointer-events-none z-10"></div>
+              )}
+              <div
+                className="absolute inset-0 w-full h-full pointer-events-none z-30 mix-blend-overlay opacity-100"
+                style={{
+                  backgroundImage: `url('${stainedglass}')`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              ></div>
+              {enableLightEffects && (
+                <div className="light-overlay absolute inset-0 w-full h-full pointer-events-none z-20 mix-blend-screen"></div>
+              )}
+              {children && (
+                <div className="relative z-40 flex flex-col justify-center items-center w-full h-full">{children}</div>
+              )}
+            </div>
 
-          {/* Front Face - Black with PngFont */}
-          <div
-            className="absolute inset-0 flex flex-col justify-center items-center p-8 overflow-hidden rounded-lg w-full h-full bg-black border border-[rgba(212,175,55,0.2)] rotate-y-180"
-            style={{
-              backfaceVisibility: 'hidden',
-              transformStyle: 'preserve-3d',
-            }}
-          >
-            {frontFaceContent && (
-              <div className="relative z-10 w-full h-full flex flex-col justify-center items-center">
-                {typeof frontFaceContent === 'function' 
-                  ? frontFaceContent(flipState === 'front')
-                  : frontFaceContent
-                }
-              </div>
-            )}
+            {/* Front Face - Black with PngFont */}
+            <div
+              className="absolute left-0 top-0 flex flex-col justify-center items-center p-8 overflow-hidden rounded-lg w-full h-full bg-black border border-[rgba(212,175,55,0.2)] cursor-pointer"
+              style={{
+                width: '360px',
+                height: '640px',
+                transform: 'rotateY(180deg)',
+                backfaceVisibility: 'hidden',
+              }}
+              onClick={() => {
+                setFlipState('back')
+                if (onClick) onClick()
+              }}
+            >
+              {frontFaceContent && (
+                <div className="relative z-10 w-full h-full flex flex-col justify-center items-center">
+                  {typeof frontFaceContent === 'function' 
+                    ? frontFaceContent(flipState === 'front')
+                    : frontFaceContent
+                  }
+                </div>
+              )}
+            </div>
           </div>
-        </div>
         </div>
       </div>
     </div>
