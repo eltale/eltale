@@ -43,31 +43,31 @@ body,
 
 @keyframes cardWobble {
   0% {
-    transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(20px);
+    transform: perspective(1000px) rotateX(0deg) rotateZ(0deg) translateZ(20px);
   }
   12.5% {
-    transform: perspective(1000px) rotateX(-2deg) rotateY(-3deg) translateZ(25px);
+    transform: perspective(1000px) rotateX(-2deg) rotateZ(-1deg) translateZ(25px);
   }
   25% {
-    transform: perspective(1000px) rotateX(-1deg) rotateY(-4deg) translateZ(30px);
+    transform: perspective(1000px) rotateX(-1deg) rotateZ(-2deg) translateZ(30px);
   }
   37.5% {
-    transform: perspective(1000px) rotateX(1deg) rotateY(-3deg) translateZ(25px);
+    transform: perspective(1000px) rotateX(1deg) rotateZ(-1deg) translateZ(25px);
   }
   50% {
-    transform: perspective(1000px) rotateX(2deg) rotateY(0deg) translateZ(20px);
+    transform: perspective(1000px) rotateX(2deg) rotateZ(0deg) translateZ(20px);
   }
   62.5% {
-    transform: perspective(1000px) rotateX(1deg) rotateY(3deg) translateZ(25px);
+    transform: perspective(1000px) rotateX(1deg) rotateZ(1deg) translateZ(25px);
   }
   75% {
-    transform: perspective(1000px) rotateX(-1deg) rotateY(4deg) translateZ(30px);
+    transform: perspective(1000px) rotateX(-1deg) rotateZ(2deg) translateZ(30px);
   }
   87.5% {
-    transform: perspective(1000px) rotateX(-2deg) rotateY(3deg) translateZ(25px);
+    transform: perspective(1000px) rotateX(-2deg) rotateZ(1deg) translateZ(25px);
   }
   100% {
-    transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(20px);
+    transform: perspective(1000px) rotateX(0deg) rotateZ(0deg) translateZ(20px);
   }
 }
 

@@ -154,25 +154,30 @@ export default function StainedGlassCard({
         }}
       >
         <div
-          ref={el => {
-            if (enableIntersectionObserver) {
-              targetRef.current = el
-            }
-            if (innerRef && el) {
-              innerRef.current = el
-            }
-          }}
-          className={`relative w-full h-full cursor-pointer transition-transform duration-700 ease-in-out ${
-            flipState === 'front' ? 'rotate-y-180' : ''
-          }`}
+          className="card-inner relative w-full h-full"
           style={{
             transformStyle: 'preserve-3d',
           }}
-          onClick={handleCardClick}
         >
+          <div
+            ref={el => {
+              if (enableIntersectionObserver) {
+                targetRef.current = el
+              }
+              if (innerRef && el) {
+                innerRef.current = el
+              }
+            }}
+            className="relative w-full h-full cursor-pointer transition-transform duration-700 ease-in-out"
+            style={{
+              transformStyle: 'preserve-3d',
+              transform: flipState === 'front' ? 'rotateY(180deg)' : 'rotateY(0deg)',
+            }}
+            onClick={handleCardClick}
+          >
           {/* Back Face - Stained Glass */}
           <div
-            className={`card-inner absolute inset-0 flex flex-col justify-center items-center p-8 overflow-hidden rounded-lg w-full h-full border border-[rgba(212,175,55,0.2)] bg-gray-900 ${
+            className={`absolute inset-0 flex flex-col justify-center items-center p-8 overflow-hidden rounded-lg w-full h-full border border-[rgba(212,175,55,0.2)] bg-gray-900 ${
               flipState === 'front' ? 'rotate-y-180' : ''
             }`}
             style={{
@@ -216,6 +221,7 @@ export default function StainedGlassCard({
               </div>
             )}
           </div>
+        </div>
         </div>
       </div>
     </div>
