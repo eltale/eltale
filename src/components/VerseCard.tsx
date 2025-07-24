@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import PngFont from './PngFont'
+import { useEffect, useState } from 'react'
+import AnimatedText from './AnimatedText'
 import StainedGlassCard, { useIntersectionObserver } from './StainedGlassCard'
 
 interface BibleVerse {
@@ -25,8 +25,6 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
   // Check if this is the user's first time
   const [isFirstTimeUser, setIsFirstTimeUser] = useState(false)
   const [showSwipeHint, setShowSwipeHint] = useState(false)
-
-  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (isFirstCard) {
@@ -68,9 +66,12 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
   return (
     <StainedGlassCard
       useIntersectionObserver={true}
-      innerRef={containerRef}
       enableFlip={true}
-      frontFaceContent={<PngFont text={verse.text} className="max-w-full px-4" />}
+      frontFaceContent={
+        <div className="text-yellow-400 max-w-full px-4 text-center">
+          <AnimatedText>{verse.text}</AnimatedText>
+        </div>
+      }
     ></StainedGlassCard>
   )
 }

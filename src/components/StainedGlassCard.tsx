@@ -141,7 +141,7 @@ export default function StainedGlassCard({
   // Flippable card with front/back faces
   return (
     <div
-      className={`h-full w-full flex items-center justify-center group ${className}`}
+      className={`h-full w-full flex items-center justify-center group font-medieval text-4xl ${className}`}
       style={{
         perspective: '1200px',
         transformStyle: 'preserve-3d',
