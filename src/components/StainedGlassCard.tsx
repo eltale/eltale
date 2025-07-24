@@ -61,7 +61,6 @@ export default function StainedGlassCard({
   // Flip state management
   const [flipState, setFlipState] = useState<'front' | 'back'>(initialFlipState)
 
-
   useEffect(() => {
     const updateCardScale = () => {
       setCardScale(calculateCardScale())
@@ -217,10 +216,7 @@ export default function StainedGlassCard({
             >
               {frontFaceContent && (
                 <div className="relative z-10 w-full h-full flex flex-col justify-center items-center">
-                  {typeof frontFaceContent === 'function' 
-                    ? frontFaceContent(flipState === 'front')
-                    : frontFaceContent
-                  }
+                  {typeof frontFaceContent === 'function' ? frontFaceContent(flipState === 'front') : frontFaceContent}
                 </div>
               )}
             </div>
