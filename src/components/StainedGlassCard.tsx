@@ -65,7 +65,13 @@ export default function StainedGlassCard({
   }, [])
 
   return (
-    <div className={`h-full w-full flex items-center justify-center card-3d ${className}`}>
+    <div 
+      className={`h-full w-full flex items-center justify-center ${className}`}
+      style={{
+        perspective: '1200px',
+        transformStyle: 'preserve-3d'
+      }}
+    >
       <div
         className="relative"
         style={{
@@ -84,21 +90,21 @@ export default function StainedGlassCard({
               innerRef.current = el
             }
           }}
-          className={`card-inner flex flex-col justify-center items-center p-8 relative overflow-hidden rounded-lg w-full h-full ${onClick ? 'cursor-pointer' : ''}`}
+          className={`card-inner flex flex-col justify-center items-center p-8 relative overflow-hidden rounded-lg w-full h-full border border-[rgba(212,175,55,0.2)] bg-gray-900 ${onClick ? 'cursor-pointer' : ''}`}
           onClick={onClick}
         >
-          {enableLightEffects && <div className="light-source"></div>}
+          {enableLightEffects && <div className="light-source absolute -top-[20%] -left-[20%] w-[140%] h-[140%] pointer-events-none z-10"></div>}
           <div 
-            className="stained-glass-layer"
+            className="absolute inset-0 w-full h-full pointer-events-none z-30 mix-blend-overlay opacity-100"
             style={{
               backgroundImage: `url('${stainedglass}')`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
           ></div>
-          {enableLightEffects && <div className="light-overlay"></div>}
+          {enableLightEffects && <div className="light-overlay absolute inset-0 w-full h-full pointer-events-none z-20 mix-blend-screen"></div>}
           {children && (
-            <div className="relative z-10 flex flex-col justify-center items-center w-full h-full">
+            <div className="relative z-40 flex flex-col justify-center items-center w-full h-full">
               {children}
             </div>
           )}
