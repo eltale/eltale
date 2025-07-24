@@ -5,7 +5,6 @@ import stainedglass_3 from '../assets/stainedglass-3.jpg'
 import stainedglass_4 from '../assets/stainedglass-4.jpg'
 import stainedglass_5 from '../assets/stainedglass-5.jpg'
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver'
-import PngFont from './PngFont'
 
 interface BibleVerse {
   id: string
@@ -117,13 +116,19 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
             targetRef.current = el
             containerRef.current = el
           }}
-          className={`card-inner flex flex-col justify-center items-center p-8 relative overflow-hidden rounded-lg w-full h-full bg-cover bg-center`}
-          style={{
-            backgroundImage: `url('${stainedglass}')`,
-            backgroundSize: 'cover',
-          }}
+          className={`card-inner flex flex-col justify-center items-center p-8 relative overflow-hidden rounded-lg w-full h-full`}
         >
-          <PngFont text={verse.text} className="max-w-full px-4" />
+          <div className="light-source"></div>
+          <div
+            className="stained-glass-layer"
+            style={{
+              backgroundImage: `url('${stainedglass}')`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          ></div>
+          {/* <div className="light-overlay"></div> */}
+          {/* <PngFont text={verse.text} className="max-w-full px-4 relative z-10" /> */}
         </div>
       </div>
     </div>

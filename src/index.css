@@ -40,6 +40,7 @@ body,
   transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   animation: cardWobble 12s ease-in-out infinite;
   border: 1px solid rgba(212, 175, 55, 0.2);
+  background-color: #1a1a1a;
 }
 
 @keyframes cardWobble {
@@ -69,5 +70,101 @@ body,
   }
   100% {
     transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(20px);
+  }
+}
+
+/* Light Source Effects */
+.light-source {
+  position: absolute;
+  top: -20%;
+  left: -20%;
+  width: 140%;
+  height: 140%;
+  background: radial-gradient(
+    circle at 45% 35%,
+    rgba(255, 215, 0, 0.8) 0%,
+    rgba(255, 165, 0, 0.6) 15%,
+    rgba(255, 140, 0, 0.4) 30%,
+    rgba(255, 215, 0, 0.3) 45%,
+    rgba(255, 255, 255, 0.2) 60%,
+    transparent 80%
+  );
+  pointer-events: none;
+  filter: brightness(1.2) contrast(1.1);
+  z-index: 1;
+  animation: lightShift 14s ease-in-out infinite;
+}
+
+.stained-glass-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: overlay;
+  /* filter: contrast(1.3); */
+  opacity: 1.0;
+}
+
+.light-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.2) 0%,
+    transparent 30%,
+    transparent 70%,
+    rgba(255, 165, 0, 0.15) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: screen;
+  animation: overlayShift 16s ease-in-out infinite;
+}
+
+@keyframes lightShift {
+  0% {
+    transform: translate(-2%, -2%) scale(1);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translate(1%, -1%) scale(1.05);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(2%, 1%) scale(1.02);
+    opacity: 0.7;
+  }
+  75% {
+    transform: translate(-1%, 2%) scale(1.03);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-2%, -2%) scale(1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes overlayShift {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.4;
+  }
+  33% {
+    transform: rotate(1deg) scale(1.01);
+    opacity: 0.6;
+  }
+  66% {
+    transform: rotate(-1deg) scale(1.02);
+    opacity: 0.5;
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.4;
   }
 }
