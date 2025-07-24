@@ -46,7 +46,17 @@ export default function StainedGlassCard({
   })
 
   // Card scaling to fit window while maintaining 9:16 aspect ratio
-  const [cardScale, setCardScale] = useState(1)
+  const calculateCardScale = () => {
+    const windowWidth = window.innerWidth
+    const windowHeight = window.innerHeight
+    const cardWidth = 360 // 9 units
+    const cardHeight = 640 // 16 units
+    const scaleX = windowWidth / cardWidth
+    const scaleY = windowHeight / cardHeight
+    return Math.min(scaleX, scaleY) * 0.9 // 90% of available space for padding
+  }
+
+  const [cardScale, setCardScale] = useState(() => calculateCardScale())
 
   // Flip state management
   const [flipState, setFlipState] = useState<'front' | 'back'>(initialFlipState)
@@ -62,22 +72,9 @@ export default function StainedGlassCard({
 
   useEffect(() => {
     const updateCardScale = () => {
-      const windowWidth = window.innerWidth
-      const windowHeight = window.innerHeight
-
-      // Fixed card dimensions in pixels (9:16 ratio)
-      const cardWidth = 360 // 9 units
-      const cardHeight = 640 // 16 units
-
-      // Calculate scale to fit (contain) within window
-      const scaleX = windowWidth / cardWidth
-      const scaleY = windowHeight / cardHeight
-      const scale = Math.min(scaleX, scaleY) * 0.9 // 90% of available space for padding
-
-      setCardScale(scale)
+      setCardScale(calculateCardScale())
     }
 
-    updateCardScale()
     window.addEventListener('resize', updateCardScale)
     return () => window.removeEventListener('resize', updateCardScale)
   }, [])
