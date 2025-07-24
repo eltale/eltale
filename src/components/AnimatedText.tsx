@@ -13,17 +13,23 @@ type AnimatedTextProps = {
   children: string
   onStart?: () => void
   onComplete?: () => void
+  shouldAnimate?: boolean
 }
 
-function AnimatedText({ children: text, onStart, onComplete }: AnimatedTextProps) {
+function AnimatedText({ children: text, onStart, onComplete, shouldAnimate = true }: AnimatedTextProps) {
   const words = text.split(/\s/)
   const [show, setShow] = useState(false)
   const [animating, setAnimating] = useState(true)
   const uniqueTextHash = useMemo(() => `${random()}`, [])
 
   useEffect(() => {
-    setShow(true)
-  }, [])
+    if (shouldAnimate) {
+      setShow(true)
+    } else {
+      setShow(false)
+      setAnimating(true)
+    }
+  }, [shouldAnimate])
 
   useEffect(() => {
     if (animating) onStart?.()

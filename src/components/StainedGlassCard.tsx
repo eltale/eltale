@@ -15,7 +15,7 @@ interface StainedGlassCardProps {
   className?: string
   innerRef?: React.RefObject<HTMLDivElement | null>
   enableFlip?: boolean
-  frontFaceContent?: React.ReactNode
+  frontFaceContent?: React.ReactNode | ((isVisible: boolean) => React.ReactNode)
   initialFlipState?: 'front' | 'back'
 }
 
@@ -212,7 +212,10 @@ export default function StainedGlassCard({
           >
             {frontFaceContent && (
               <div className="relative z-10 w-full h-full flex flex-col justify-center items-center">
-                {frontFaceContent}
+                {typeof frontFaceContent === 'function' 
+                  ? frontFaceContent(flipState === 'front')
+                  : frontFaceContent
+                }
               </div>
             )}
           </div>
