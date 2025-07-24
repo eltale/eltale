@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import StainedGlassCard, { useIntersectionObserver } from './StainedGlassCard'
 import PngFont from './PngFont'
+import StainedGlassCard, { useIntersectionObserver } from './StainedGlassCard'
 
 interface BibleVerse {
   id: string
@@ -17,7 +17,7 @@ interface VerseCardProps {
 }
 
 export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps) {
-  const { targetRef, hasIntersected } = useIntersectionObserver({
+  const { hasIntersected } = useIntersectionObserver({
     threshold: 0.4,
     triggerOnce: true,
   })
@@ -65,14 +65,12 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
     }
   }, [showSwipeHint])
 
-
   return (
     <StainedGlassCard
       useIntersectionObserver={true}
       innerRef={containerRef}
       enableFlip={true}
       frontFaceContent={<PngFont text={verse.text} className="max-w-full px-4" />}
-    >
-    </StainedGlassCard>
+    ></StainedGlassCard>
   )
 }

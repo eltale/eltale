@@ -13,13 +13,13 @@ interface StainedGlassCardProps {
   enableLightEffects?: boolean
   useIntersectionObserver?: boolean
   className?: string
-  innerRef?: React.RefObject<HTMLDivElement>
+  innerRef?: React.RefObject<HTMLDivElement | null>
   enableFlip?: boolean
   frontFaceContent?: React.ReactNode
   initialFlipState?: 'front' | 'back'
 }
 
-export default function StainedGlassCard({ 
+export default function StainedGlassCard({
   children,
   stainedGlassImage,
   onClick,
@@ -29,18 +29,18 @@ export default function StainedGlassCard({
   innerRef,
   enableFlip = false,
   frontFaceContent,
-  initialFlipState = 'back'
+  initialFlipState = 'back',
 }: StainedGlassCardProps) {
   // Random stained glass selection if no custom image provided
   const stainedglass = useMemo(() => {
     if (stainedGlassImage) return stainedGlassImage
-    
+
     const stainedglasses = [stainedglass_1, stainedglass_2, stainedglass_3, stainedglass_4, stainedglass_5]
     return stainedglasses[Math.floor(Math.random() * stainedglasses.length)]
   }, [stainedGlassImage])
 
   // Optional intersection observer
-  const { targetRef, hasIntersected } = useIntersectionObserver({
+  const { targetRef } = useIntersectionObserver({
     threshold: 0.4,
     triggerOnce: true,
   })
@@ -53,7 +53,7 @@ export default function StainedGlassCard({
 
   const handleCardClick = () => {
     if (enableFlip) {
-      setFlipState(prev => prev === 'front' ? 'back' : 'front')
+      setFlipState(prev => (prev === 'front' ? 'back' : 'front'))
     }
     if (onClick) {
       onClick()
@@ -85,11 +85,11 @@ export default function StainedGlassCard({
   if (!enableFlip) {
     // Original single-sided card
     return (
-      <div 
+      <div
         className={`h-full w-full flex items-center justify-center ${className}`}
         style={{
           perspective: '1200px',
-          transformStyle: 'preserve-3d'
+          transformStyle: 'preserve-3d',
         }}
       >
         <div
@@ -106,15 +106,19 @@ export default function StainedGlassCard({
               if (enableIntersectionObserver) {
                 targetRef.current = el
               }
-              if (innerRef) {
+              if (innerRef && el) {
                 innerRef.current = el
               }
             }}
-            className={`card-inner flex flex-col justify-center items-center p-8 relative overflow-hidden rounded-lg w-full h-full border border-[rgba(212,175,55,0.2)] bg-gray-900 ${onClick ? 'cursor-pointer' : ''}`}
+            className={`card-inner flex flex-col justify-center items-center p-8 relative overflow-hidden rounded-lg w-full h-full border border-[rgba(212,175,55,0.2)] bg-gray-900 ${
+              onClick ? 'cursor-pointer' : ''
+            }`}
             onClick={onClick}
           >
-            {enableLightEffects && <div className="light-source absolute -top-[20%] -left-[20%] w-[140%] h-[140%] pointer-events-none z-10"></div>}
-            <div 
+            {enableLightEffects && (
+              <div className="light-source absolute -top-[20%] -left-[20%] w-[140%] h-[140%] pointer-events-none z-10"></div>
+            )}
+            <div
               className="absolute inset-0 w-full h-full pointer-events-none z-30 mix-blend-overlay opacity-100"
               style={{
                 backgroundImage: `url('${stainedglass}')`,
@@ -122,11 +126,11 @@ export default function StainedGlassCard({
                 backgroundPosition: 'center',
               }}
             ></div>
-            {enableLightEffects && <div className="light-overlay absolute inset-0 w-full h-full pointer-events-none z-20 mix-blend-screen"></div>}
+            {enableLightEffects && (
+              <div className="light-overlay absolute inset-0 w-full h-full pointer-events-none z-20 mix-blend-screen"></div>
+            )}
             {children && (
-              <div className="relative z-40 flex flex-col justify-center items-center w-full h-full">
-                {children}
-              </div>
+              <div className="relative z-40 flex flex-col justify-center items-center w-full h-full">{children}</div>
             )}
           </div>
         </div>
@@ -136,11 +140,11 @@ export default function StainedGlassCard({
 
   // Flippable card with front/back faces
   return (
-    <div 
+    <div
       className={`h-full w-full flex items-center justify-center group ${className}`}
       style={{
         perspective: '1200px',
-        transformStyle: 'preserve-3d'
+        transformStyle: 'preserve-3d',
       }}
     >
       <div
@@ -157,26 +161,32 @@ export default function StainedGlassCard({
             if (enableIntersectionObserver) {
               targetRef.current = el
             }
-            if (innerRef) {
+            if (innerRef && el) {
               innerRef.current = el
             }
           }}
-          className={`relative w-full h-full cursor-pointer transition-transform duration-700 ease-in-out ${flipState === 'front' ? 'rotate-y-180' : ''}`}
+          className={`relative w-full h-full cursor-pointer transition-transform duration-700 ease-in-out ${
+            flipState === 'front' ? 'rotate-y-180' : ''
+          }`}
           style={{
-            transformStyle: 'preserve-3d'
+            transformStyle: 'preserve-3d',
           }}
           onClick={handleCardClick}
         >
           {/* Back Face - Stained Glass */}
           <div
-            className={`card-inner absolute inset-0 flex flex-col justify-center items-center p-8 overflow-hidden rounded-lg w-full h-full border border-[rgba(212,175,55,0.2)] bg-gray-900 ${flipState === 'front' ? 'rotate-y-180' : ''}`}
+            className={`card-inner absolute inset-0 flex flex-col justify-center items-center p-8 overflow-hidden rounded-lg w-full h-full border border-[rgba(212,175,55,0.2)] bg-gray-900 ${
+              flipState === 'front' ? 'rotate-y-180' : ''
+            }`}
             style={{
               backfaceVisibility: 'hidden',
-              transformStyle: 'preserve-3d'
+              transformStyle: 'preserve-3d',
             }}
           >
-            {enableLightEffects && <div className="light-source absolute -top-[20%] -left-[20%] w-[140%] h-[140%] pointer-events-none z-10"></div>}
-            <div 
+            {enableLightEffects && (
+              <div className="light-source absolute -top-[20%] -left-[20%] w-[140%] h-[140%] pointer-events-none z-10"></div>
+            )}
+            <div
               className="absolute inset-0 w-full h-full pointer-events-none z-30 mix-blend-overlay opacity-100"
               style={{
                 backgroundImage: `url('${stainedglass}')`,
@@ -184,11 +194,11 @@ export default function StainedGlassCard({
                 backgroundPosition: 'center',
               }}
             ></div>
-            {enableLightEffects && <div className="light-overlay absolute inset-0 w-full h-full pointer-events-none z-20 mix-blend-screen"></div>}
+            {enableLightEffects && (
+              <div className="light-overlay absolute inset-0 w-full h-full pointer-events-none z-20 mix-blend-screen"></div>
+            )}
             {children && (
-              <div className="relative z-40 flex flex-col justify-center items-center w-full h-full">
-                {children}
-              </div>
+              <div className="relative z-40 flex flex-col justify-center items-center w-full h-full">{children}</div>
             )}
           </div>
 
@@ -197,7 +207,7 @@ export default function StainedGlassCard({
             className="absolute inset-0 flex flex-col justify-center items-center p-8 overflow-hidden rounded-lg w-full h-full bg-black border border-[rgba(212,175,55,0.2)] rotate-y-180"
             style={{
               backfaceVisibility: 'hidden',
-              transformStyle: 'preserve-3d'
+              transformStyle: 'preserve-3d',
             }}
           >
             {frontFaceContent && (
