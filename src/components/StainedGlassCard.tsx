@@ -119,9 +119,9 @@ export default function StainedGlassCard({
                   backgroundPosition: 'center',
                 }}
               ></div>
-              {enableLightEffects && (
+              {/* {enableLightEffects && (
                 <div className="light-overlay absolute inset-0 w-full h-full pointer-events-none z-20 mix-blend-screen"></div>
-              )}
+              )} */}
               {children && (
                 <div className="relative z-40 flex flex-col justify-center items-center w-full h-full">{children}</div>
               )}
@@ -185,16 +185,16 @@ export default function StainedGlassCard({
                 <div className="light-source absolute -top-[20%] -left-[20%] w-[140%] h-[140%] pointer-events-none z-10"></div>
               )}
               <div
-                className="absolute inset-0 w-full h-full pointer-events-none z-30 mix-blend-overlay opacity-100"
+                className="absolute inset-0 w-full h-full pointer-events-none z-30 opacity-100 mix-blend-overlay"
                 style={{
                   backgroundImage: `url('${stainedglass}')`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                 }}
               ></div>
-              {enableLightEffects && (
+              {/* {enableLightEffects && (
                 <div className="light-overlay absolute inset-0 w-full h-full pointer-events-none z-20 mix-blend-screen"></div>
-              )}
+              )} */}
               {children && (
                 <div className="relative z-40 flex flex-col justify-center items-center w-full h-full">{children}</div>
               )}
