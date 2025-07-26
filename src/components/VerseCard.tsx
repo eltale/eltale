@@ -67,9 +67,12 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
     <StainedGlassCard
       useIntersectionObserver={true}
       enableFlip={true}
-      frontFaceContent={(isVisible) => (
-        <div className="text-yellow-400 max-w-full px-4 text-center">
-          <AnimatedText shouldAnimate={isVisible}>{verse.text}</AnimatedText>
+      frontFaceContent={isVisible => (
+        <div className="text-yellow-400 max-w-full px-4 text-center flex flex-col justify-center items-center h-full">
+          <div className="flex-1 flex items-center">
+            <AnimatedText shouldAnimate={isVisible}>{verse.text}</AnimatedText>
+          </div>
+          <div className="text-xs mt-4">{verse.reference}</div>
         </div>
       )}
     ></StainedGlassCard>
