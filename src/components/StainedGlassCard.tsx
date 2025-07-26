@@ -4,6 +4,7 @@ import stainedglass_2 from '../assets/stainedglass-2.jpg'
 import stainedglass_3 from '../assets/stainedglass-3.jpg'
 import stainedglass_4 from '../assets/stainedglass-4.jpg'
 import stainedglass_5 from '../assets/stainedglass-5.jpg'
+import stainedglass_6 from '../assets/stainedglass-6.jpg'
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver'
 
 interface StainedGlassCardProps {
@@ -35,7 +36,14 @@ export default function StainedGlassCard({
   const stainedglass = useMemo(() => {
     if (stainedGlassImage) return stainedGlassImage
 
-    const stainedglasses = [stainedglass_1, stainedglass_2, stainedglass_3, stainedglass_4, stainedglass_5]
+    const stainedglasses = [
+      stainedglass_1,
+      stainedglass_2,
+      stainedglass_3,
+      stainedglass_4,
+      stainedglass_5,
+      stainedglass_6,
+    ]
     return stainedglasses[Math.floor(Math.random() * stainedglasses.length)]
   }, [stainedGlassImage])
 
@@ -202,7 +210,7 @@ export default function StainedGlassCard({
 
             {/* Front Face - Black with PngFont */}
             <div
-              className="absolute left-0 top-0 flex flex-col justify-center items-center p-8 overflow-hidden rounded-lg w-full h-full bg-black border border-[rgba(212,175,55,0.2)] cursor-pointer"
+              className="absolute left-0 top-0 flex flex-col justify-center items-center p-8 overflow-hidden rounded-lg w-full h-full bg-black border border-[rgba(212,175,55,0.2)] cursor-pointer shadow-[inset_0_0_60px_theme(colors.yellow.400/30%)]"
               style={{
                 width: '360px',
                 height: '640px',
