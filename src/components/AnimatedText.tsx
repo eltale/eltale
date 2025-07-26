@@ -23,6 +23,26 @@ function AnimatedText({ children: text, onStart, onComplete, shouldAnimate = tru
   const [hasAnimated, setHasAnimated] = useState(false)
   const uniqueTextHash = useMemo(() => `${random()}`, [])
 
+  // Calculate font size based on text length
+  const fontSize = useMemo(() => {
+    const fontSizes = ['text-4xl', 'text-3xl', 'text-2xl', 'text-xl', 'text-lg', 'text-base', 'text-sm']
+    const textLength = text.length
+    
+    // Define length thresholds for each font size (much higher ceiling)
+    const thresholds = [200, 350, 500, 650, 800, 1000] // characters
+    
+    let sizeIndex = 0
+    for (let i = 0; i < thresholds.length; i++) {
+      if (textLength > thresholds[i]) {
+        sizeIndex = i + 1
+      } else {
+        break
+      }
+    }
+    
+    return fontSizes[Math.min(sizeIndex, fontSizes.length - 1)]
+  }, [text])
+
   useEffect(() => {
     if (shouldAnimate && !hasAnimated) {
       setShow(true)
@@ -49,7 +69,7 @@ function AnimatedText({ children: text, onStart, onComplete, shouldAnimate = tru
   const randomY = randomPick([0, '50%', '100%'])
 
   const elText = (
-    <div>
+    <div className={fontSize}>
       {words.map((word, w) => {
         const letters = word.split('')
 
