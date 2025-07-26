@@ -20,23 +20,30 @@ function AnimatedText({ children: text, onStart, onComplete, shouldAnimate = tru
   const words = text.split(/\s/)
   const [show, setShow] = useState(false)
   const [animating, setAnimating] = useState(true)
+  const [hasAnimated, setHasAnimated] = useState(false)
   const uniqueTextHash = useMemo(() => `${random()}`, [])
 
   useEffect(() => {
-    if (shouldAnimate) {
+    if (shouldAnimate && !hasAnimated) {
       setShow(true)
+    } else if (hasAnimated) {
+      setShow(true)
+      setAnimating(false)
     } else {
       setShow(false)
       setAnimating(true)
     }
-  }, [shouldAnimate])
+  }, [shouldAnimate, hasAnimated])
 
   useEffect(() => {
     if (animating) onStart?.()
     else onComplete?.()
   }, [animating]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const disableAnimation = () => setAnimating(false)
+  const disableAnimation = () => {
+    setAnimating(false)
+    setHasAnimated(true)
+  }
 
   const randomX = randomPick([0, '50%', '100%'])
   const randomY = randomPick([0, '50%', '100%'])
