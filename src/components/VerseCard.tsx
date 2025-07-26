@@ -67,6 +67,7 @@ export default function VerseCard({ verse, isFirstCard = false }: VerseCardProps
     <StainedGlassCard
       useIntersectionObserver={true}
       enableFlip={true}
+      verseReference={verse.reference}
       frontFaceContent={isVisible => (
         <div className="text-yellow-400 max-w-full px-4 text-center flex flex-col justify-center items-center h-full">
           <div className="flex-1 flex items-center">

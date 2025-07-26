@@ -1,15 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
-import stainedglass_1 from '../assets/stainedglass-1.jpg'
-import stainedglass_2 from '../assets/stainedglass-2.jpg'
-import stainedglass_3 from '../assets/stainedglass-3.jpg'
-import stainedglass_4 from '../assets/stainedglass-4.jpg'
-import stainedglass_5 from '../assets/stainedglass-5.jpg'
-import stainedglass_6 from '../assets/stainedglass-6.jpg'
+import { useEffect, useState } from 'react'
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver'
 
 interface StainedGlassCardProps {
   children?: React.ReactNode
   stainedGlassImage?: string
+  verseReference?: string
   onClick?: () => void
   enableLightEffects?: boolean
   useIntersectionObserver?: boolean
@@ -23,6 +18,7 @@ interface StainedGlassCardProps {
 export default function StainedGlassCard({
   children,
   stainedGlassImage,
+  verseReference,
   onClick,
   enableLightEffects = true,
   useIntersectionObserver: enableIntersectionObserver = false,
@@ -32,20 +28,58 @@ export default function StainedGlassCard({
   frontFaceContent,
   initialFlipState = 'back',
 }: StainedGlassCardProps) {
-  // Random stained glass selection if no custom image provided
-  const stainedglass = useMemo(() => {
-    if (stainedGlassImage) return stainedGlassImage
+  // Hash-based stained glass selection using verse reference
+  const [stainedglass, setStainedglass] = useState<string>('')
 
-    const stainedglasses = [
-      stainedglass_1,
-      stainedglass_2,
-      stainedglass_3,
-      stainedglass_4,
-      stainedglass_5,
-      stainedglass_6,
-    ]
-    return stainedglasses[Math.floor(Math.random() * stainedglasses.length)]
-  }, [stainedGlassImage])
+  useEffect(() => {
+    const loadStainedGlass = async () => {
+      if (stainedGlassImage) {
+        setStainedglass(stainedGlassImage)
+        return
+      }
+
+      // Simple hash function for verse reference
+      const hashString = (str: string) => {
+        let hash = 0
+        for (let i = 0; i < str.length; i++) {
+          const char = str.charCodeAt(i)
+          hash = (hash << 5) - hash + char
+          hash = hash & hash // Convert to 32-bit integer
+        }
+        return Math.abs(hash)
+      }
+
+      // Dynamically discover all stained glass images
+      const stainedGlassModules = import.meta.glob('../assets/stainedglass-*.jpg')
+      const imageKeys = Object.keys(stainedGlassModules)
+
+      if (imageKeys.length === 0) {
+        console.error('No stained glass images found')
+        return
+      }
+
+      const index = verseReference
+        ? hashString(verseReference) % imageKeys.length
+        : Math.floor(Math.random() * imageKeys.length)
+      const selectedKey = imageKeys[index]
+
+      try {
+        const imageModule = (await stainedGlassModules[selectedKey]()) as { default: string }
+        setStainedglass(imageModule.default)
+      } catch (error) {
+        console.error(`Failed to load ${selectedKey}:`, error)
+        // Fallback to first available image
+        try {
+          const fallbackModule = (await stainedGlassModules[imageKeys[0]]()) as { default: string }
+          setStainedglass(fallbackModule.default)
+        } catch (fallbackError) {
+          console.error('Failed to load fallback image:', fallbackError)
+        }
+      }
+    }
+
+    loadStainedGlass()
+  }, [stainedGlassImage, verseReference])
 
   // Optional intersection observer
   const { targetRef } = useIntersectionObserver({
