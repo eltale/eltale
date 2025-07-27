@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode, type RefObject } from 'react'
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver'
 
 interface StainedGlassCardProps {
-  children?: React.ReactNode
+  children?: ReactNode
   stainedGlassImage?: string
   verseReference?: string
   onClick?: () => void
   enableLightEffects?: boolean
   useIntersectionObserver?: boolean
   className?: string
-  innerRef?: React.RefObject<HTMLDivElement | null>
+  innerRef?: RefObject<HTMLDivElement | null>
   enableFlip?: boolean
-  frontFaceContent?: React.ReactNode | ((isVisible: boolean) => React.ReactNode)
+  frontFaceContent?: ReactNode | ((isVisible: boolean) => ReactNode)
   initialFlipState?: 'front' | 'back'
 }
 
